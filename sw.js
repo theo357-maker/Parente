@@ -5,7 +5,7 @@ const SYNC_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
 const urlsToCache = [
   '/',
-  '/parent.html',
+  '/index.html',
   '/manifest.json',
   '/icon-72x72.png',
   '/icon-192x192.png',
@@ -405,7 +405,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           return caches.match(request)
-            .then(cachedResponse => cachedResponse || caches.match('/parent.html'));
+            .then(cachedResponse => cachedResponse || caches.match('/index.html'));
         })
     );
     return;
