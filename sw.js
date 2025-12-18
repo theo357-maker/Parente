@@ -5,9 +5,9 @@ const SYNC_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-72x72.png',
+  'index.html',
+  'manifest.json',
+  'icon-72x72.png',
   '/icon-192x192.png',
   '/icon-512x512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
@@ -405,7 +405,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           return caches.match(request)
-            .then(cachedResponse => cachedResponse || caches.match('/index.html'));
+            .then(cachedResponse => cachedResponse || caches.match('index.html'));
         })
     );
     return;
