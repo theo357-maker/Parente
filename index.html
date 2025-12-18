@@ -1814,7 +1814,7 @@ async function setupFirebaseMessaging() {
   if (!navigator.serviceWorker.controller) {
     try {
       // Enregistrer le SW unifié
-      const registration = await navigator.serviceWorker.register('sw.js', {
+      const registration = await navigator.serviceWorker.register('./sw.js', {
         scope: '/',
         updateViaCache: 'none' // Toujours vérifier les mises à jour
       });
