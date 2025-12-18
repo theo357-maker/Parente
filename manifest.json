@@ -2,7 +2,7 @@
   "name": "Espace Parent - CS La Colombe",
   "short_name": "CS La Colombe",
   "description": "Application de suivi scolaire pour les parents",
-  "start_url": "index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#3498db",
   "theme_color": "#3498db",
@@ -93,28 +93,28 @@
       "name": "Tableau de bord",
       "short_name": "Dashboard",
       "description": "Accéder au tableau de bord",
-      "url": "/parent.html?page=dashboard",
+      "url": "/index.html?page=dashboard",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notes et cotes",
       "short_name": "Notes",
       "description": "Consulter les notes des enfants",
-      "url": "/parent.html?page=grades",
+      "url": "/index.html?page=grades",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Communiqués",
       "short_name": "Communiqués",
       "description": "Voir les communiqués de paiement",
-      "url": "/parent.html?page=communiques",
+      "url": "/index.html?page=communiques",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notifications",
       "short_name": "Alertes",
       "description": "Voir les notifications",
-      "url": "/parent.html?page=notifications",
+      "url": "/index.html?page=notifications",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     }
   ],
@@ -122,12 +122,12 @@
   "protocol_handlers": [
     {
       "protocol": "web+cslacolombe",
-      "url": "/parent.html?url=%s"
+      "url": "/index.html?url=%s"
     }
   ],
   
   "share_target": {
-    "action": "/parent.html",
+    "action": "/index.html",
     "method": "GET",
     "enctype": "application/x-www-form-urlencoded",
     "params": {
