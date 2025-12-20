@@ -6,39 +6,36 @@
     <title>Espace Parent - CS la Colombe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<!-- PWA Meta Tags -->
-  <meta name="application-name" content="TheoVêt">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="TheoVêt">
-  <meta name="description" content="Solution complète de gestion de commerce de vêtements">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="msapplication-TileColor" content="#3498db">
-  <meta name="msapplication-tap-highlight" content="no">
-  <meta name="theme-color" content="#3498db">
-<!-- Service Worker et mise à jour -->
-<meta name="version" content="2.1.0">
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="TheoVêt">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TheoVêt">
+    <meta name="description" content="Solution complète de gestion de commerce de vêtements">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#3498db">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#3498db">
+    <!-- Service Worker et mise à jour -->
+    <meta name="version" content="2.1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icon-167x167.png">
 
-  <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="icon-192x192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icon-192x192.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="icon-167x167.png">
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
 
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- Styles et Bibliothèques -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<!-- Scripts de mise à jour -->
-<script src="update-system.js"></script>
-
-  
+    <!-- Styles et Bibliothèques -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Scripts de mise à jour -->
+    <script src="update-system.js"></script>
 
     <style>
         :root {
@@ -66,242 +63,260 @@
         .page { display: none; }
         .page.active { display: block; }
 
-/* Styles pour les badges de notification */
-.notification-dot {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 12px;
-    height: 12px;
-    background-color: var(--danger);
-    border-radius: 50%;
-    animation: pulse 1.5s infinite;
-    border: 2px solid white;
-}
+        /* Styles pour les badges de notification */
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            border: 2px solid white;
+        }
 
-.notification-dot.small {
-    width: 8px;
-    height: 8px;
-    top: 5px;
-    right: 5px;
-}
+        .notification-dot.small {
+            width: 8px;
+            height: 8px;
+            top: 5px;
+            right: 5px;
+        }
 
-/* Animation pour les nouvelles notifications */
-@keyframes highlight {
-    0% { background-color: rgba(52, 152, 219, 0.1); }
-    100% { background-color: transparent; }
-}
+        /* Animation pour les nouvelles notifications */
+        @keyframes highlight {
+            0% { background-color: rgba(52, 152, 219, 0.1); }
+            100% { background-color: transparent; }
+        }
 
-.new-notification {
-    animation: highlight 2s ease-in-out;
-}
+        .new-notification {
+            animation: highlight 2s ease-in-out;
+        }
 
-/* Styles pour les notifications en plein écran */
-.fullscreen-notification {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    padding: 20px;
-    color: white;
-    text-align: center;
-}
+        /* Styles pour les notifications en plein écran */
+        .fullscreen-notification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
 
-/* Ajoutez dans la section CSS de parent.html */
-.communique-card.expiring-soon {
-    animation: pulse-border-expiring 2s infinite;
-    border-left-color: var(--warning);
-}
+        /* Ajoutez dans la section CSS de parent.html */
+        .communique-card.expiring-soon {
+            animation: pulse-border-expiring 2s infinite;
+            border-left-color: var(--warning);
+        }
 
-@keyframes pulse-border-expiring {
-    0% { border-left-color: var(--warning); }
-    50% { border-left-color: #ff9f43; }
-    100% { border-left-color: var(--warning); }
-}
+        @keyframes pulse-border-expiring {
+            0% { border-left-color: var(--warning); }
+            50% { border-left-color: #ff9f43; }
+            100% { border-left-color: var(--warning); }
+        }
 
-/* Ajoutez dans le CSS existant */
+        /* Ajoutez dans le CSS existant */
+        .file-preview {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
 
-.file-preview {
-    margin: 1rem 0;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 4px solid var(--info);
-}
+        /* Styles pour les notifications de mise à jour */
+        .update-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-left: 4px solid #3498db;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            padding: 15px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            z-index: 9999;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
 
+        .update-toast.show {
+            transform: translateX(0);
+        }
 
+        .update-toast.success {
+            border-left-color: #27ae60;
+        }
 
-/* Styles pour les notifications de mise à jour */
-.update-toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: white;
-  border-left: 4px solid #3498db;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-  padding: 15px 20px;
-  min-width: 300px;
-  max-width: 400px;
-  z-index: 9999;
-  transform: translateX(120%);
-  transition: transform 0.3s ease;
-}
+        .update-toast.warning {
+            border-left-color: #f39c12;
+        }
 
-.update-toast.show {
-  transform: translateX(0);
-}
+        .update-toast.danger {
+            border-left-color: #e74c3c;
+        }
 
-.update-toast.success {
-  border-left-color: #27ae60;
-}
+        /* Badges d'application */
+        .app-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 99999;
+            animation: pulse 1.5s infinite;
+        }
 
-.update-toast.warning {
-  border-left-color: #f39c12;
-}
+        /* Animation pour badges */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
-.update-toast.danger {
-  border-left-color: #e74c3c;
-}
+        /* Badge dans le header */
+        #notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
 
-/* Badges d'application */
-.app-badge {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #e74c3c;
-  color: white;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  z-index: 99999;
-  animation: pulse 1.5s infinite;
-}
+        /* Badges sur les items du menu */
+        .nav-menu .notification-dot {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background: #e74c3c;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
 
-/* Animation pour badges */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
+        .update-toast.info {
+            border-left-color: #3498db;
+        }
 
-/* Badge dans le header */
-#notification-count {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #e74c3c;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  animation: pulse 1.5s infinite;
-}
+        .update-available {
+            animation: pulse 2s infinite;
+        }
 
-/* Badges sur les items du menu */
-.nav-menu .notification-dot {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  width: 8px;
-  height: 8px;
-  background: #e74c3c;
-  border-radius: 50%;
-  border: 2px solid white;
-}
+        /* Style pour les icônes dans les sélecteurs */
+        .form-control option i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+            color: var(--primary);
+        }
 
-.update-toast.info {
-  border-left-color: #3498db;
-}
+        /* Pour certains navigateurs qui ne supportent pas les icônes dans les options */
+        select.form-control {
+            font-family: 'Font Awesome 6 Free', 'Segoe UI', sans-serif;
+            padding-right: 30px;
+        }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
+        .select-with-icon {
+            position: relative;
+        }
 
-.update-available {
-  animation: pulse 2s infinite;
-}
+        .select-with-icon i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--primary);
+        }
 
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
 
-.file-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-}
+        .file-icon {
+            font-size: 2rem;
+            color: var(--info);
+        }
 
-.file-icon {
-    font-size: 2rem;
-    color: var(--info);
-}
+        .file-details h5 {
+            margin: 0;
+            color: var(--dark);
+        }
 
-.file-details h5 {
-    margin: 0;
-    color: var(--dark);
-}
+        .file-details small {
+            color: #666;
+        }
 
-.file-details small {
-    color: #666;
-}
+        .file-preview-img {
+            max-width: 100%;
+            max-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
 
-.file-preview-img {
-    max-width: 100%;
-    max-height: 300px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 1rem;
-}
+        .fullscreen-notification h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
 
-.fullscreen-notification h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: white;
-}
+        .fullscreen-notification p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
 
-.fullscreen-notification p {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    max-width: 500px;
-}
-
-/* Badge sur l'icône de l'application */
-.app-badge {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--danger);
-    color: white;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: bold;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    z-index: 9999;
-}
+        /* Badge sur l'icône de l'application */
+        .app-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 9999;
+        }
+        
         .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; color: white; }
         .btn-primary { background: var(--primary); }
         .btn-success { background: var(--success); }
@@ -581,138 +596,138 @@
             animation: pulse 1.5s infinite;
         }
 
-/* --- Styles pour les communiqués --- */
-.communique-card {
-    background: white;
-    border-left: 4px solid var(--primary);
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+        /* --- Styles pour les communiqués --- */
+        .communique-card {
+            background: white;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
 
-.communique-card.urgent {
-    border-left-color: var(--danger);
-    animation: pulse-border 2s infinite;
-}
+        .communique-card.urgent {
+            border-left-color: var(--danger);
+            animation: pulse-border 2s infinite;
+        }
 
-.communique-card.paid {
-    border-left-color: var(--success);
-    opacity: 0.8;
-}
+        .communique-card.paid {
+            border-left-color: var(--success);
+            opacity: 0.8;
+        }
 
-.communique-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
+        .communique-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-.communique-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--dark);
-    margin-bottom: 0.5rem;
-}
+        .communique-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
 
-.communique-meta {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-}
+        .communique-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
 
-.communique-meta span {
-    margin-right: 1rem;
-}
+        .communique-meta span {
+            margin-right: 1rem;
+        }
 
-.communique-meta .badge {
-    margin-right: 0.5rem;
-}
+        .communique-meta .badge {
+            margin-right: 0.5rem;
+        }
 
-.communique-content {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    font-family: 'Times New Roman', serif;
-    line-height: 1.6;
-}
+        .communique-content {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+        }
 
-.communique-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
+        .communique-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-.communique-actions {
-    display: flex;
-    gap: 0.5rem;
-}
+        .communique-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
 
-@keyframes pulse-border {
-    0% { border-left-color: var(--danger); }
-    50% { border-left-color: #ff6b6b; }
-    100% { border-left-color: var(--danger); }
-}
+        @keyframes pulse-border {
+            0% { border-left-color: var(--danger); }
+            50% { border-left-color: #ff6b6b; }
+            100% { border-left-color: var(--danger); }
+        }
 
-/* Modal pour l'affichage complet du communiqué */
-.communique-full-modal .modal-content {
-    max-width: 800px;
-    max-height: 90vh;
-    overflow-y: auto;
-}
+        /* Modal pour l'affichage complet du communiqué */
+        .communique-full-modal .modal-content {
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
-.communique-full-content {
-    font-family: 'Times New Roman', serif;
-    line-height: 1.8;
-}
+        .communique-full-content {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.8;
+        }
 
-.communique-full-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--primary);
-}
+        .communique-full-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
 
-.communique-full-logo {
-    max-width: 120px;
-    margin-bottom: 1rem;
-}
+        .communique-full-logo {
+            max-width: 120px;
+            margin-bottom: 1rem;
+        }
 
-.communique-full-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 1rem 0;
-    color: var(--dark);
-}
+        .communique-full-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: var(--dark);
+        }
 
-.communique-full-date {
-    text-align: right;
-    font-style: italic;
-    color: #666;
-    margin-bottom: 2rem;
-}
+        .communique-full-date {
+            text-align: right;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 2rem;
+        }
 
-.communique-full-signature {
-    margin-top: 3rem;
-    text-align: right;
-    padding-top: 1rem;
-    border-top: 1px solid #ddd;
-}
+        .communique-full-signature {
+            margin-top: 3rem;
+            text-align: right;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
 
-.signature-line {
-    border-top: 1px solid #000;
-    margin-top: 3rem;
-    width: 300px;
-    margin-left: auto;
-}
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 3rem;
+            width: 300px;
+            margin-left: auto;
+        }
         
         /* Notification Toast */
         .notification-toast {
@@ -828,7 +843,7 @@
     <!-- Écran de connexion -->
     <div id="login-overlay" class="login-overlay">
         <div class="login-card">
-            <h3>Espace Parent</h3>
+            <h3><i class="fas fa-user-friends"></i> Espace Parent</h3>
             <p>Veuillez vous connecter pour continuer.</p>
             
             <!-- Formulaire de connexion -->
@@ -839,17 +854,21 @@
                 <div class="form-group">
                     <input type="password" id="login-password" class="form-control" placeholder="Mot de passe" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Connexion</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </button>
             </form>
             
             <p style="margin-top: 1rem;">
-                <a href="#" id="show-activation-link">Activer mon compte</a>
+                <a href="#" id="show-activation-link">
+                    <i class="fas fa-user-plus"></i> Activer mon compte
+                </a>
             </p>
         </div>
         
         <!-- Formulaire d'activation de compte -->
         <div id="activation-card" class="login-card hidden">
-            <h3>Activation du Compte Parent</h3>
+            <h3><i class="fas fa-user-plus"></i> Activation du Compte Parent</h3>
             <p>Créez votre compte en associant le(s) matricule(s) de votre(vos) enfant(s)</p>
             
             <div class="activation-steps">
@@ -871,85 +890,97 @@
             <div id="activation-step-1">
                 <form id="activation-form-step1">
                     <div class="form-group">
-                        <label>Votre nom complet</label>
+                        <label><i class="fas fa-user"></i> Votre nom complet</label>
                         <input type="text" id="parent-fullname" class="form-control" placeholder="Votre nom complet" required>
                     </div>
                     <div class="form-group">
-                        <label>Votre email</label>
+                        <label><i class="fas fa-envelope"></i> Votre email</label>
                         <input type="email" id="parent-email" class="form-control" placeholder="Votre adresse email" required>
                     </div>
                     <div class="form-group">
-                        <label>Votre téléphone</label>
+                        <label><i class="fas fa-phone"></i> Votre téléphone</label>
                         <input type="tel" id="parent-phone" class="form-control" placeholder="Votre numéro de téléphone" required>
                     </div>
                     <div class="form-group">
-                        <label>Matricule de votre enfant</label>
+                        <label><i class="fas fa-child"></i> Matricule de votre enfant</label>
                         <input type="text" id="child-matricule" class="form-control" placeholder="Matricule de l'élève" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Vérifier le matricule</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-search"></i> Vérifier le matricule
+                    </button>
                 </form>
                 
                 <p style="margin-top: 1rem;">
-                    <a href="#" id="show-login-link">Retour à la connexion</a>
+                    <a href="#" id="show-login-link">
+                        <i class="fas fa-arrow-left"></i> Retour à la connexion
+                    </a>
                 </p>
             </div>
             
             <!-- Étape 2: Vérification et ajout d'enfants -->
             <div id="activation-step-2" class="hidden">
                 <div class="alert alert-info">
-                    <p><strong>Vérification réussie !</strong></p>
+                    <p><strong><i class="fas fa-check-circle"></i> Vérification réussie !</strong></p>
                     <p id="child-info">Élève trouvé: <span id="child-name"></span> - <span id="child-class"></span></p>
                 </div>
                 
                 <div id="children-list">
-                    <h4>Enfants associés à votre compte</h4>
+                    <h4><i class="fas fa-users"></i> Enfants associés à votre compte</h4>
                     <div id="children-container">
                         <!-- Les enfants seront ajoutés dynamiquement ici -->
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label>Ajouter un autre matricule (optionnel)</label>
+                    <label><i class="fas fa-plus-circle"></i> Ajouter un autre matricule (optionnel)</label>
                     <div class="form-row">
                         <input type="text" id="additional-matricule" class="form-control" placeholder="Matricule d'un autre enfant">
-                        <button type="button" id="add-child-btn" class="btn btn-info">Ajouter</button>
+                        <button type="button" id="add-child-btn" class="btn btn-info">
+                            <i class="fas fa-plus"></i> Ajouter
+                        </button>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label>Créer votre mot de passe</label>
+                    <label><i class="fas fa-lock"></i> Créer votre mot de passe</label>
                     <input type="password" id="parent-password" class="form-control" placeholder="Votre mot de passe" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Confirmer le mot de passe</label>
+                    <label><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
                     <input type="password" id="parent-password-confirm" class="form-control" placeholder="Confirmer le mot de passe" required>
                 </div>
                 
-                <button type="button" id="create-account-btn" class="btn btn-success" style="width: 100%;">Créer mon compte</button>
+                <button type="button" id="create-account-btn" class="btn btn-success" style="width: 100%;">
+                    <i class="fas fa-user-check"></i> Créer mon compte
+                </button>
                 
                 <p style="margin-top: 1rem;">
-                    <a href="#" id="back-to-step1">Retour à l'étape précédente</a>
+                    <a href="#" id="back-to-step1">
+                        <i class="fas fa-arrow-left"></i> Retour à l'étape précédente
+                    </a>
                 </p>
             </div>
             
             <!-- Étape 3: Compte créé -->
             <div id="activation-step-3" class="hidden">
                 <div class="alert alert-success">
-                    <h4>Compte créé avec succès !</h4>
+                    <h4><i class="fas fa-check-circle"></i> Compte créé avec succès !</h4>
                     <p>Votre compte parent a été créé avec les informations suivientes :</p>
                 </div>
                 
                 <div style="text-align: left; margin: 1rem 0;">
-                    <p><strong>Matricule parent:</strong> <span id="created-parent-matricule"></span></p>
-                    <p><strong>Nom:</strong> <span id="created-parent-name"></span></p>
-                    <p><strong>Email:</strong> <span id="created-parent-email"></span></p>
-                    <p><strong>Enfants associés:</strong> <span id="created-children-count"></span></p>
+                    <p><strong><i class="fas fa-id-card"></i> Matricule parent:</strong> <span id="created-parent-matricule"></span></p>
+                    <p><strong><i class="fas fa-user"></i> Nom:</strong> <span id="created-parent-name"></span></p>
+                    <p><strong><i class="fas fa-envelope"></i> Email:</strong> <span id="created-parent-email"></span></p>
+                    <p><strong><i class="fas fa-child"></i> Enfants associés:</strong> <span id="created-children-count"></span></p>
                 </div>
                 
                 <p>Vous pouvez maintenant vous connecter avec votre matricule parent et votre mot de passe.</p>
                 
-                <button type="button" id="go-to-login-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Se connecter</button>
+                <button type="button" id="go-to-login-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
             </div>
         </div>
     </div>
@@ -965,8 +996,7 @@
                 <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-tachometer-alt fa-fw"></i> Tableau de bord</a></li>
                 <li><a href="#" data-page="grades"><i class="fas fa-chart-line fa-fw"></i> Cotes et Notes</a></li>
                 <li><a href="#" data-page="presence-incidents"><i class="fas fa-clipboard-check fa-fw"></i> Présence & Incidents</a></li>
-
-<li><a href="#" data-page="communiques"><i class="fas fa-newspaper fa-fw"></i> Communiqués</a></li>
+                <li><a href="#" data-page="communiques"><i class="fas fa-newspaper fa-fw"></i> Communiqués</a></li>
                 <li><a href="#" data-page="payments"><i class="fas fa-money-bill-wave fa-fw"></i> Paiements</a></li>
                 <li><a href="#" data-page="homework"><i class="fas fa-book-open fa-fw"></i> Devoirs</a></li>
                 <li><a href="#" data-page="timetable"><i class="fas fa-clock fa-fw"></i> Temps Horaire</a></li>
@@ -995,7 +1025,9 @@
                             <span id="notification-count" class="hidden" style="position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
                         </button>
                     </div>
-                    <button id="logout-btn" class="btn btn-danger">Déconnexion</button>
+                    <button id="logout-btn" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
                 </div>
             </header>
             <main class="content-area">
@@ -1004,13 +1036,16 @@
                 <!-- Page: Tableau de bord -->
                 <div id="dashboard-page" class="page active">
                     <div class="card">
-                        <h3>Bienvenue dans votre espace parent</h3>
+                        <h3><i class="fas fa-tachometer-alt"></i> Bienvenue dans votre espace parent</h3>
                         <p>Vous pouvez suivre la scolarité de vos enfants, gérer les paiements et communiquer avec l'établissement.</p>
                     </div>
                     
                     <div class="form-group">
-                        <label for="child-selector"><strong>Sélectionner un enfant pour voir ses informations :</strong></label>
-                        <select id="child-selector" class="form-control"></select>
+                        <label for="child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant pour voir ses informations :</strong></label>
+                        <select id="child-selector" class="form-control">
+                            <option value=""><i class="fas fa-child"></i> -- Sélectionner un enfant --</option>
+                            <!-- Les enfants seront chargés dynamiquement -->
+                        </select>
                     </div>
                     <div id="child-dashboard-content" class="hidden">
                         <div class="card">
@@ -1048,42 +1083,42 @@
                     </div>
                 </div>
 
-<!-- Page: Communiqués -->
-<div id="communiques-page" class="page">
-    <div class="card">
-        <div class="form-row" style="justify-content: space-between; align-items: center;">
-            <h3><i class="fas fa-newspaper"></i> Mes Communiqués</h3>
-            <button id="refresh-communiques-btn" class="btn btn-primary btn-sm">
-                <i class="fas fa-sync-alt"></i> Actualiser
-            </button>
-        </div>
-        
-        <div class="form-group">
-            <label for="communique-child-selector"><strong>Filtrer par enfant :</strong></label>
-            <select id="communique-child-selector" class="form-control">
-                <option value="all">Tous mes enfants</option>
-                <!-- Les enfants seront chargés dynamiquement -->
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="communique-type-filter"><strong>Filtrer par type de frais :</strong></label>
-            <select id="communique-type-filter" class="form-control">
-                <option value="all">Tous les frais</option>
-                <option value="Frais scolaires">Frais scolaires</option>
-                <option value="Frais de l'état">Frais de l'état</option>
-                <option value="visite">Visite</option>
-                <option value="achat pull">Achat pull</option>
-                <option value="Frais d'inscription">Frais d'inscription</option>
-                <option value="Autres">Autres</option>
-            </select>
-        </div>
-        
-        <div id="communiques-list-container">
-            <!-- Liste des communiqués personnalisés pour chaque enfant -->
-        </div>
-    </div>
-</div>
+                <!-- Page: Communiqués -->
+                <div id="communiques-page" class="page">
+                    <div class="card">
+                        <div class="form-row" style="justify-content: space-between; align-items: center;">
+                            <h3><i class="fas fa-newspaper"></i> Mes Communiqués</h3>
+                            <button id="refresh-communiques-btn" class="btn btn-primary btn-sm">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="communique-child-selector"><strong><i class="fas fa-child"></i> Filtrer par enfant :</strong></label>
+                            <select id="communique-child-selector" class="form-control">
+                                <option value="all"><i class="fas fa-users"></i> Tous mes enfants</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="communique-type-filter"><strong><i class="fas fa-filter"></i> Filtrer par type de frais :</strong></label>
+                            <select id="communique-type-filter" class="form-control">
+                                <option value="all"><i class="fas fa-filter"></i> Tous les frais</option>
+                                <option value="Frais scolaires"><i class="fas fa-graduation-cap"></i> Frais scolaires</option>
+                                <option value="Frais de l'état"><i class="fas fa-landmark"></i> Frais de l'état</option>
+                                <option value="visite"><i class="fas fa-plane"></i> Visite</option>
+                                <option value="achat pull"><i class="fas fa-tshirt"></i> Achat pull</option>
+                                <option value="Frais d'inscription"><i class="fas fa-file-signature"></i> Frais d'inscription</option>
+                                <option value="Autres"><i class="fas fa-ellipsis-h"></i> Autres</option>
+                            </select>
+                        </div>
+                        
+                        <div id="communiques-list-container">
+                            <!-- Liste des communiqués personnalisés pour chaque enfant -->
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Page: Cotes et Notes (Regroupement) -->
                 <div id="grades-page" class="page">
@@ -1108,8 +1143,11 @@
                     <!-- Sous-onglet: Notes Secondaire -->
                     <div id="secondary-grades-tab" class="sub-tab-content active">
                         <div class="form-group">
-                            <label for="secondary-grades-child-selector"><strong>Sélectionner un enfant du secondaire :</strong></label>
-                            <select id="secondary-grades-child-selector" class="form-control"></select>
+                            <label for="secondary-grades-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant du secondaire :</strong></label>
+                            <select id="secondary-grades-child-selector" class="form-control">
+                                <option value=""><i class="fas fa-graduation-cap"></i> -- Sélectionner un enfant du secondaire --</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
                         </div>
                         
                         <div id="secondary-grades-content" class="hidden">
@@ -1144,21 +1182,24 @@
                     <!-- Sous-onglet: Cotes Primaire -->
                     <div id="primary-grades-tab" class="sub-tab-content">
                         <div class="form-group">
-                            <label for="primary-grades-child-selector"><strong>Sélectionner un enfant du primaire :</strong></label>
-                            <select id="primary-grades-child-selector" class="form-control"></select>
+                            <label for="primary-grades-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant du primaire :</strong></label>
+                            <select id="primary-grades-child-selector" class="form-control">
+                                <option value=""><i class="fas fa-chart-bar"></i> -- Sélectionner un enfant du primaire --</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
                         </div>
                         
                         <div id="primary-grades-content" class="hidden">
                             <div class="period-selector">
-                                <button class="period-btn active" data-period="1ère période">1ère Période</button>
-                                <button class="period-btn" data-period="2ème période">2ème Période</button>
-                                <button class="period-btn" data-period="3ème période">3ème Période</button>
-                                <button class="period-btn" data-period="4ème période">4ème Période</button>
-                                <button class="period-btn" data-period="5ème période">5ème Période</button>
+                                <button class="period-btn active" data-period="1ère période"><i class="fas fa-calendar-alt"></i> 1ère Période</button>
+                                <button class="period-btn" data-period="2ème période"><i class="fas fa-calendar-alt"></i> 2ème Période</button>
+                                <button class="period-btn" data-period="3ème période"><i class="fas fa-calendar-alt"></i> 3ème Période</button>
+                                <button class="period-btn" data-period="4ème période"><i class="fas fa-calendar-alt"></i> 4ème Période</button>
+                                <button class="period-btn" data-period="5ème période"><i class="fas fa-calendar-alt"></i> 5ème Période</button>
                             </div>
                             
                             <div class="loading" id="primary-grades-loading">
-                                <i class="fas fa-spinner"></i>
+                                <i class="fas fa-spinner fa-spin"></i>
                                 <p>Chargement des cotes...</p>
                             </div>
                             
@@ -1183,7 +1224,7 @@
                             </div>
                             
                             <div id="primary-grades-summary" class="card hidden" style="margin-top: 1.5rem;">
-                                <h4>Résumé des Cotes</h4>
+                                <h4><i class="fas fa-chart-pie"></i> Résumé des Cotes</h4>
                                 <div id="primary-grades-stats">
                                     <!-- Les statistiques des cotes seront affichées ici -->
                                 </div>
@@ -1194,13 +1235,16 @@
                     <!-- Sous-onglet: Cotes Maternelle -->
                     <div id="kindergarten-grades-tab" class="sub-tab-content">
                         <div class="form-group">
-                            <label for="kindergarten-grades-child-selector"><strong>Sélectionner un enfant de la maternelle :</strong></label>
-                            <select id="kindergarten-grades-child-selector" class="form-control"></select>
+                            <label for="kindergarten-grades-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant de la maternelle :</strong></label>
+                            <select id="kindergarten-grades-child-selector" class="form-control">
+                                <option value=""><i class="fas fa-baby"></i> -- Sélectionner un enfant de la maternelle --</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
                         </div>
                         
                         <div id="kindergarten-grades-content" class="hidden">
                             <div class="loading" id="kindergarten-grades-loading">
-                                <i class="fas fa-spinner"></i>
+                                <i class="fas fa-spinner fa-spin"></i>
                                 <p>Chargement des cotes...</p>
                             </div>
                             
@@ -1235,8 +1279,11 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="presence-child-selector"><strong>Sélectionner un enfant :</strong></label>
-                        <select id="presence-child-selector" class="form-control"></select>
+                        <label for="presence-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant :</strong></label>
+                        <select id="presence-child-selector" class="form-control">
+                            <option value=""><i class="fas fa-child"></i> -- Sélectionner un enfant --</option>
+                            <!-- Les enfants seront chargés dynamiquement -->
+                        </select>
                     </div>
                     
                     <div id="presence-incidents-content" class="hidden">
@@ -1247,24 +1294,24 @@
                             <div class="presence-controls">
                                 <div class="presence-controls-row">
                                     <div class="form-group">
-                                        <label>Mois</label>
+                                        <label><i class="fas fa-calendar"></i> Mois</label>
                                         <select id="presence-month" class="form-control">
-                                            <option value="0">Janvier</option>
-                                            <option value="1">Février</option>
-                                            <option value="2">Mars</option>
-                                            <option value="3">Avril</option>
-                                            <option value="4">Mai</option>
-                                            <option value="5">Juin</option>
-                                            <option value="6">Juillet</option>
-                                            <option value="7">Août</option>
-                                            <option value="8">Septembre</option>
-                                            <option value="9">Octobre</option>
-                                            <option value="10">Novembre</option>
-                                            <option value="11">Décembre</option>
+                                            <option value="0"><i class="fas fa-snowflake"></i> Janvier</option>
+                                            <option value="1"><i class="fas fa-heart"></i> Février</option>
+                                            <option value="2"><i class="fas fa-leaf"></i> Mars</option>
+                                            <option value="3"><i class="fas fa-umbrella"></i> Avril</option>
+                                            <option value="4"><i class="fas fa-tree"></i> Mai</option>
+                                            <option value="5"><i class="fas fa-sun"></i> Juin</option>
+                                            <option value="6"><i class="fas fa-sun"></i> Juillet</option>
+                                            <option value="7"><i class="fas fa-umbrella-beach"></i> Août</option>
+                                            <option value="8"><i class="fas fa-school"></i> Septembre</option>
+                                            <option value="9"><i class="fas fa-leaf"></i> Octobre</option>
+                                            <option value="10"><i class="fas fa-cloud-rain"></i> Novembre</option>
+                                            <option value="11"><i class="fas fa-snowflake"></i> Décembre</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Année</label>
+                                        <label><i class="fas fa-calendar-alt"></i> Année</label>
                                         <select id="presence-year" class="form-control">
                                             <!-- Les années seront chargées dynamiquement -->
                                         </select>
@@ -1295,7 +1342,7 @@
                             <h3><i class="fas fa-exclamation-triangle"></i> Incidents Signalés</h3>
                             <div id="incidents-list-container">
                                 <div class="loading">
-                                    <i class="fas fa-spinner"></i>
+                                    <i class="fas fa-spinner fa-spin"></i>
                                     <p>Chargement des incidents...</p>
                                 </div>
                             </div>
@@ -1305,57 +1352,68 @@
 
                 <!-- Page: Paiements -->
                 <div id="payments-page" class="page">
-                    <h2>Gestion des Paiements</h2>
-                    <div class="form-group">
-                        <label for="payment-child-selector"><strong>Sélectionner un enfant :</strong></label>
-                        <select id="payment-child-selector" class="form-control"></select>
+                    <div class="card">
+                        <h3><i class="fas fa-money-bill-wave"></i> Gestion des Paiements</h3>
+                        <p>Gérez et suivez les paiements scolaires de vos enfants.</p>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="payment-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant :</strong></label>
+                        <select id="payment-child-selector" class="form-control">
+                            <option value=""><i class="fas fa-child"></i> -- Sélectionner un enfant --</option>
+                            <!-- Les enfants seront chargés dynamiquement -->
+                        </select>
+                    </div>
+                    
                     <div id="payment-content" class="hidden">
                         <div class="card">
-                            <h3>Statut des Paiements</h3>
+                            <h3><i class="fas fa-chart-line"></i> Statut des Paiements</h3>
                             <div id="payment-status-container"></div>
                         </div>
+                        
                         <div class="card">
-                            <h3>Paiement en ligne</h3>
+                            <h3><i class="fas fa-credit-card"></i> Paiement en ligne</h3>
                             <form id="online-payment-form">
                                 <div class="form-row">
                                     <div class="form-group" style="flex: 1;">
-                                        <label>Matricule de l'élève</label>
+                                        <label><i class="fas fa-id-card"></i> Matricule de l'élève</label>
                                         <input type="text" id="payment-student-id" class="form-control" readonly>
                                     </div>
                                     <div class="form-group" style="flex: 2;">
-                                        <label>Nom complet de l'élève</label>
+                                        <label><i class="fas fa-user"></i> Nom complet de l'élève</label>
                                         <input type="text" id="payment-student-name" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group" style="flex: 1;">
-                                        <label>Classe</label>
+                                        <label><i class="fas fa-school"></i> Classe</label>
                                         <input type="text" id="payment-student-class" class="form-control" readonly>
                                     </div>
                                     <div class="form-group" style="flex: 1;">
-                                        <label>Mois de paiement</label>
+                                        <label><i class="fas fa-calendar"></i> Mois de paiement</label>
                                         <select id="payment-month" class="form-control" required>
-                                            <option value="janvier">Janvier</option>
-                                            <option value="février">Février</option>
-                                            <option value="mars">Mars</option>
-                                            <option value="avril">Avril</option>
-                                            <option value="mai">Mai</option>
-                                            <option value="juin">Juin</option>
-                                            <option value="juillet">Juillet</option>
-                                            <option value="août">Août</option>
-                                            <option value="septembre">Septembre</option>
-                                            <option value="octobre">Octobre</option>
-                                            <option value="novembre">Novembre</option>
-                                            <option value="décembre">Décembre</option>
+                                            <option value="janvier"><i class="fas fa-snowflake"></i> Janvier</option>
+                                            <option value="février"><i class="fas fa-heart"></i> Février</option>
+                                            <option value="mars"><i class="fas fa-leaf"></i> Mars</option>
+                                            <option value="avril"><i class="fas fa-umbrella"></i> Avril</option>
+                                            <option value="mai"><i class="fas fa-tree"></i> Mai</option>
+                                            <option value="juin"><i class="fas fa-sun"></i> Juin</option>
+                                            <option value="juillet"><i class="fas fa-sun"></i> Juillet</option>
+                                            <option value="août"><i class="fas fa-umbrella-beach"></i> Août</option>
+                                            <option value="septembre"><i class="fas fa-school"></i> Septembre</option>
+                                            <option value="octobre"><i class="fas fa-leaf"></i> Octobre</option>
+                                            <option value="novembre"><i class="fas fa-cloud-rain"></i> Novembre</option>
+                                            <option value="décembre"><i class="fas fa-snowflake"></i> Décembre</option>
                                         </select>
                                     </div>
                                     <div class="form-group" style="flex: 1;">
-                                        <label>Montant (FCFA)</label>
+                                        <label><i class="fas fa-money-bill"></i> Montant (FCFA)</label>
                                         <input type="number" id="payment-amount" class="form-control" placeholder="30000" required>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Valider le paiement</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-check-circle"></i> Valider le paiement
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -1364,7 +1422,7 @@
                 <!-- Page: Devoirs (Regroupement) -->
                 <div id="homework-page" class="page">
                     <div class="card">
-                        <h3>Devoirs des Enfants</h3>
+                        <h3><i class="fas fa-book-open"></i> Devoirs des Enfants</h3>
                         <p>Consultez les devoirs assignés à vos enfants selon leur niveau scolaire.</p>
                     </div>
                     
@@ -1384,19 +1442,26 @@
                     <!-- Sous-onglet: Devoirs Secondaire -->
                     <div id="secondary-homework-tab" class="sub-tab-content active">
                         <div class="form-group">
-                            <label for="secondary-homework-child-selector"><strong>Sélectionner un enfant du secondaire :</strong></label>
-                            <select id="secondary-homework-child-selector" class="form-control"></select>
+                            <label for="secondary-homework-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant du secondaire :</strong></label>
+                            <select id="secondary-homework-child-selector" class="form-control">
+                                <option value=""><i class="fas fa-graduation-cap"></i> -- Sélectionner un enfant du secondaire --</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
                         </div>
                         
                         <div id="secondary-homework-content" class="hidden">
                             <div class="tabs">
-                                <div class="tab active" data-tab="pending">Devoirs en cours</div>
-                                <div class="tab" data-tab="submitted">Devoirs rendus</div>
+                                <div class="tab active" data-tab="pending">
+                                    <i class="fas fa-clock"></i> Devoirs en cours
+                                </div>
+                                <div class="tab" data-tab="submitted">
+                                    <i class="fas fa-check-circle"></i> Devoirs rendus
+                                </div>
                             </div>
                             
                             <div id="pending-tab" class="tab-content active">
                                 <div class="loading" id="pending-homework-loading">
-                                    <i class="fas fa-spinner"></i>
+                                    <i class="fas fa-spinner fa-spin"></i>
                                     <p>Chargement des devoirs en cours...</p>
                                 </div>
                                 <div id="pending-homework-container">
@@ -1406,7 +1471,7 @@
                             
                             <div id="submitted-tab" class="tab-content">
                                 <div class="loading" id="submitted-homework-loading">
-                                    <i class="fas fa-spinner"></i>
+                                    <i class="fas fa-spinner fa-spin"></i>
                                     <p>Chargement des devoirs rendus...</p>
                                 </div>
                                 <div id="submitted-homework-container">
@@ -1419,13 +1484,16 @@
                     <!-- Sous-onglet: Devoirs Primaire -->
                     <div id="primary-homework-tab" class="sub-tab-content">
                         <div class="form-group">
-                            <label for="primary-homework-child-selector"><strong>Sélectionner un enfant du primaire :</strong></label>
-                            <select id="primary-homework-child-selector" class="form-control"></select>
+                            <label for="primary-homework-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant du primaire :</strong></label>
+                            <select id="primary-homework-child-selector" class="form-control">
+                                <option value=""><i class="fas fa-chart-bar"></i> -- Sélectionner un enfant du primaire --</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
                         </div>
                         
                         <div id="primary-homework-content" class="hidden">
                             <div class="loading" id="primary-homework-loading">
-                                <i class="fas fa-spinner"></i>
+                                <i class="fas fa-spinner fa-spin"></i>
                                 <p>Chargement des devoirs...</p>
                             </div>
                             <div id="primary-homework-container">
@@ -1437,13 +1505,16 @@
                     <!-- Sous-onglet: Devoirs Maternelle -->
                     <div id="kindergarten-homework-tab" class="sub-tab-content">
                         <div class="form-group">
-                            <label for="kindergarten-homework-child-selector"><strong>Sélectionner un enfant de la maternelle :</strong></label>
-                            <select id="kindergarten-homework-child-selector" class="form-control"></select>
+                            <label for="kindergarten-homework-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant de la maternelle :</strong></label>
+                            <select id="kindergarten-homework-child-selector" class="form-control">
+                                <option value=""><i class="fas fa-baby"></i> -- Sélectionner un enfant de la maternelle --</option>
+                                <!-- Les enfants seront chargés dynamiquement -->
+                            </select>
                         </div>
                         
                         <div id="kindergarten-homework-content" class="hidden">
                             <div class="loading" id="kindergarten-homework-loading">
-                                <i class="fas fa-spinner"></i>
+                                <i class="fas fa-spinner fa-spin"></i>
                                 <p>Chargement des devoirs...</p>
                             </div>
                             <div id="kindergarten-homework-container">
@@ -1456,30 +1527,33 @@
                 <!-- Page: Temps Horaire -->
                 <div id="timetable-page" class="page">
                     <div class="card">
-                        <h3>Temps Horaire des Enfants</h3>
+                        <h3><i class="fas fa-clock"></i> Temps Horaire des Enfants</h3>
                         <p>Consultez les horaires de classe de vos enfants.</p>
                     </div>
                     
                     <div class="form-group">
-                        <label for="timetable-child-selector"><strong>Sélectionner un enfant :</strong></label>
-                        <select id="timetable-child-selector" class="form-control"></select>
+                        <label for="timetable-child-selector"><strong><i class="fas fa-child"></i> Sélectionner un enfant :</strong></label>
+                        <select id="timetable-child-selector" class="form-control">
+                            <option value=""><i class="fas fa-child"></i> -- Sélectionner un enfant --</option>
+                            <!-- Les enfants seront chargés dynamiquement -->
+                        </select>
                     </div>
                     
                     <div id="timetable-content" class="hidden">
                         <div class="schedule-controls">
                             <div class="form-group" style="flex: 1;">
-                                <label>Sélectionner le mois</label>
+                                <label><i class="fas fa-calendar"></i> Sélectionner le mois</label>
                                 <input type="month" id="timetable-month" class="form-control">
                             </div>
                             <div class="form-group" style="flex: 1;">
-                                <label>Sélectionner la semaine</label>
+                                <label><i class="fas fa-calendar-week"></i> Sélectionner la semaine</label>
                                 <select id="timetable-week" class="form-control">
-                                    <option value="">-- Toutes les semaines --</option>
-                                    <option value="1">Semaine 1</option>
-                                    <option value="2">Semaine 2</option>
-                                    <option value="3">Semaine 3</option>
-                                    <option value="4">Semaine 4</option>
-                                    <option value="5">Semaine 5</option>
+                                    <option value=""><i class="fas fa-calendar"></i> -- Toutes les semaines --</option>
+                                    <option value="1"><i class="fas fa-calendar-week"></i> Semaine 1</option>
+                                    <option value="2"><i class="fas fa-calendar-week"></i> Semaine 2</option>
+                                    <option value="3"><i class="fas fa-calendar-week"></i> Semaine 3</option>
+                                    <option value="4"><i class="fas fa-calendar-week"></i> Semaine 4</option>
+                                    <option value="5"><i class="fas fa-calendar-week"></i> Semaine 5</option>
                                 </select>
                             </div>
                             <div class="form-group" style="flex: 1; display: flex; align-items: flex-end;">
@@ -1491,7 +1565,7 @@
                         
                         <div id="timetable-container">
                             <div class="loading" id="timetable-loading">
-                                <i class="fas fa-spinner"></i>
+                                <i class="fas fa-spinner fa-spin"></i>
                                 <p>Chargement de l'horaire...</p>
                             </div>
                             <div id="timetable-display">
@@ -1505,8 +1579,10 @@
                 <div id="children-page" class="page">
                     <div class="card">
                         <div class="form-row" style="justify-content: space-between; align-items: center;">
-                            <h3>Mes Enfants</h3>
-                            <button id="add-child-account-btn" class="btn btn-primary">Ajouter un enfant</button>
+                            <h3><i class="fas fa-child"></i> Mes Enfants</h3>
+                            <button id="add-child-account-btn" class="btn btn-primary">
+                                <i class="fas fa-plus-circle"></i> Ajouter un enfant
+                            </button>
                         </div>
                         
                         <div id="children-list-container">
@@ -1518,7 +1594,7 @@
                 <!-- Page: Mon Profil -->
                 <div id="profile-page" class="page">
                     <div class="card">
-                        <h3>Mon Profil</h3>
+                        <h3><i class="fas fa-user"></i> Mon Profil</h3>
                         
                         <!-- Photo de profil -->
                         <div class="photo-upload">
@@ -1533,33 +1609,33 @@
                         
                         <form id="profile-form">
                             <div class="form-group">
-                                <label>Matricule Parent</label>
+                                <label><i class="fas fa-id-card"></i> Matricule Parent</label>
                                 <input type="text" id="profile-matricule" class="form-control" readonly>
                             </div>
                             <div class="form-group">
-                                <label>Nom Complet</label>
+                                <label><i class="fas fa-user"></i> Nom Complet</label>
                                 <input type="text" id="profile-fullname" class="form-control" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Email</label>
+                                    <label><i class="fas fa-envelope"></i> Email</label>
                                     <input type="email" id="profile-email" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Téléphone</label>
+                                    <label><i class="fas fa-phone"></i> Téléphone</label>
                                     <input type="tel" id="profile-phone" class="form-control" required>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                                <label><i class="fas fa-lock"></i> Nouveau mot de passe (laisser vide pour ne pas changer)</label>
                                 <input type="password" id="profile-new-password" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label>Confirmer le nouveau mot de passe</label>
+                                <label><i class="fas fa-lock"></i> Confirmer le nouveau mot de passe</label>
                                 <input type="password" id="profile-confirm-password" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label>Notifications Push</label>
+                                <label><i class="fas fa-bell"></i> Notifications Push</label>
                                 <div style="margin-top: 10px;">
                                     <button type="button" id="enable-notifications-btn" class="btn btn-info btn-sm">
                                         <i class="fas fa-bell"></i> Activer les notifications
@@ -1570,7 +1646,9 @@
                                 </div>
                                 <div id="notification-status" style="margin-top: 10px; font-size: 0.9rem;"></div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Mettre à jour le profil</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Mettre à jour le profil
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -1578,7 +1656,7 @@
                 <!-- Page: Messagerie -->
                 <div id="communication-page" class="page">
                     <div class="card">
-                        <h3>Messagerie</h3>
+                        <h3><i class="fas fa-envelope"></i> Messagerie</h3>
                         <p>Module de messagerie en développement.</p>
                     </div>
                 </div>
@@ -1587,20 +1665,22 @@
                 <div id="notifications-page" class="page">
                     <div class="card">
                         <div class="form-row" style="justify-content: space-between; align-items: center;">
-                            <h3>Mes Notifications</h3>
-                            <button id="clear-all-notifications-btn" class="btn btn-danger btn-sm">Tout effacer</button>
+                            <h3><i class="fas fa-bell"></i> Mes Notifications</h3>
+                            <button id="clear-all-notifications-btn" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i> Tout effacer
+                            </button>
                         </div>
                         
                         <div class="form-group">
-                            <label>Filtrer par type</label>
+                            <label><i class="fas fa-filter"></i> Filtrer par type</label>
                             <select id="notification-filter" class="form-control">
-                                <option value="all">Toutes les notifications</option>
-                                <option value="grades">Nouvelles notes</option>
-                                <option value="homework">Devoirs</option>
-                                <option value="incidents">Incidents</option>
-                                <option value="payments">Paiements</option>
-                                <option value="messages">Messages</option>
-                                <option value="announcements">Annonces</option>
+                                <option value="all"><i class="fas fa-filter"></i> Toutes les notifications</option>
+                                <option value="grades"><i class="fas fa-chart-line"></i> Nouvelles notes</option>
+                                <option value="homework"><i class="fas fa-book-open"></i> Devoirs</option>
+                                <option value="incidents"><i class="fas fa-exclamation-triangle"></i> Incidents</option>
+                                <option value="payments"><i class="fas fa-money-bill-wave"></i> Paiements</option>
+                                <option value="messages"><i class="fas fa-envelope"></i> Messages</option>
+                                <option value="announcements"><i class="fas fa-bullhorn"></i> Annonces</option>
                             </select>
                         </div>
                         
@@ -1617,7 +1697,7 @@
     <div id="payment-code-modal" class="modal hidden">
         <div class="modal-content" style="text-align: center; max-width: 450px;">
             <div class="modal-header">
-                <h3>Code de Paiement Généré</h3>
+                <h3><i class="fas fa-qrcode"></i> Code de Paiement Généré</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <p>Présentez ce code au secrétariat pour finaliser le paiement.</p>
@@ -1628,8 +1708,12 @@
             </div>
             
             <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button class="btn btn-primary" onclick="closeModal('payment-code-modal')">Fermer</button>
-                <button id="download-receipt-btn" class="btn btn-success">Télécharger le reçu</button>
+                <button class="btn btn-primary" onclick="closeModal('payment-code-modal')">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+                <button id="download-receipt-btn" class="btn btn-success">
+                    <i class="fas fa-download"></i> Télécharger le reçu
+                </button>
             </div>
         </div>
     </div>
@@ -1638,52 +1722,53 @@
     <div id="add-child-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Ajouter un enfant</h3>
+                <h3><i class="fas fa-user-plus"></i> Ajouter un enfant</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <form id="add-child-form">
                 <div class="form-group">
-                    <label>Matricule de l'enfant</label>
+                    <label><i class="fas fa-id-card"></i> Matricule de l'enfant</label>
                     <input type="text" id="new-child-matricule" class="form-control" placeholder="Matricule de l'élève" required>
                 </div>
                 <div class="alert alert-info hidden" id="child-verification-result">
                     <!-- Résultat de la vérification -->
                 </div>
                 <div class="form-group">
-                    <label>Relation avec l'enfant</label>
+                    <label><i class="fas fa-users"></i> Relation avec l'enfant</label>
                     <select id="child-relation" class="form-control" required>
-                        <option value="parent">Parent</option>
-                        <option value="tuteur">Tuteur</option>
-                        <option value="autre">Autre</option>
+                        <option value="parent"><i class="fas fa-user-friends"></i> Parent</option>
+                        <option value="tuteur"><i class="fas fa-user-tie"></i> Tuteur</option>
+                        <option value="autre"><i class="fas fa-user"></i> Autre</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Ajouter l'enfant</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Ajouter l'enfant
+                </button>
             </form>
         </div>
     </div>
 
-<!-- Modal pour l'affichage complet du communiqué -->
-<div id="communique-full-modal" class="modal hidden communique-full-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Communiqué de Paiement</h3>
-            <button class="close-modal">&times;</button>
+    <!-- Modal pour l'affichage complet du communiqué -->
+    <div id="communique-full-modal" class="modal hidden communique-full-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-newspaper"></i> Communiqué de Paiement</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="communique-full-content" class="communique-full-content">
+                <!-- Contenu complet du communiqué sera chargé ici -->
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button id="print-communique-btn" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('communique-full-modal')">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+            </div>
         </div>
-        <div id="communique-full-content" class="communique-full-content">
-          html
-<!-- Modifiez le bouton d'impression dans le modal -->
-<div style="text-align: center; margin-top: 1.5rem;">
-    <button id="print-communique-btn" class="btn btn-primary">
-        <i class="fas fa-print"></i> Imprimer
-    </button>
-    <button class="btn btn-secondary" onclick="closeModal('communique-full-modal')">
-        Fermer
-    </button>
-</div>
-
     </div>
-</div>
-
+    
     
     <script type="module">
 // 1. INITIALISATION DE FIREBASE
