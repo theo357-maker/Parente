@@ -1855,6 +1855,83 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let messaging = null;
 
+const vapidKey = "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM";
+
+async function initializeFirebaseMessaging() {
+  try {
+    // Initialiser Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    
+    // Vérifier la permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.warn('⚠️ Permission refusée');
+      return null;
+    }
+    
+    // Obtenir le token FCM avec VAPID Key
+    const token = await messaging.getToken({
+      vapidKey: vapidKey,
+      serviceWorkerRegistration: await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    });
+    
+    console.log('✅ Token FCM obtenu:', token);
+    
+    // ENVOYER CE TOKEN À VOTRE BACKEND
+    await saveFCMTokenToBackend(token);
+    
+    return messaging;
+    
+  } catch (error) {
+    console.error('❌ Erreur Firebase Messaging:', error);
+    return null;
+  }
+}
+
+// Lancer au chargement
+document.addEventListener('DOMContentLoaded', async () => {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    const messaging = await initializeFirebaseMessaging();
+    
+    if (messaging) {
+      // Écouter les messages en background
+      messaging.onBackgroundMessage((payload) => {
+        console.log('📱 Notification en background:', payload);
+        
+        // Afficher la notification système
+        if (payload.notification) {
+          const { title, body } = payload.notification;
+          
+          // Notification NATIVE du système
+          if ('Notification' in window && Notification.permission === 'granted') {
+            const notification = new Notification(title, {
+              body: body,
+              icon: '/icon-192x192.png',
+              badge: '/icon-72x72.png',
+              tag: 'fcm-notification',
+              requireInteraction: true,
+              silent: false,
+              data: payload.data
+            });
+            
+            // Gérer le clic
+            notification.onclick = () => {
+              window.focus();
+              notification.close();
+              // Naviguer vers l'app
+              if (payload.data?.url) {
+                window.location.href = payload.data.url;
+              }
+            };
+          }
+        }
+      });
+    }
+  }
+});
+
+
 // Vérifier si Firebase Messaging est supporté
 (async () => {
     const isMessagingSupported = await isSupported();
