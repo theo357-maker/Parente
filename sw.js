@@ -35,31 +35,46 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// === ACTIVATION ===
+// Dans sw.js - MODIFIER la section d'activation
 self.addEventListener('activate', (event) => {
-  console.log('🎯 Service Worker: Activation v2.3.0');
+  console.log('🎯 Service Worker: Activation v2.3.0 - PRIORITÉ MAX');
   
   event.waitUntil(
     Promise.all([
-      // Nettoyer les anciens caches
+      // Prendre le contrôle IMMÉDIATEMENT
+      self.clients.claim(),
+      
+      // Nettoyer les caches EN PARALLÈLE
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName !== CACHE_NAME) {
-              console.log(`🗑️ Suppression ancien cache: ${cacheName}`);
               return caches.delete(cacheName);
             }
           })
         );
       }),
-      // Prendre le contrôle immédiatement
-      self.clients.claim(),
-      // Initialiser la synchronisation en arrière-plan
-      initializeBackgroundSync()
+      
+      // FORCER l'initialisation immédiate
+      initializeImmediateBackgroundSync()
     ])
   );
 });
 
+// NOUVELLE FONCTION - Initialisation immédiate
+function initializeImmediateBackgroundSync() {
+  console.log('🚀 Initialisation IMMÉDIATE des notifications');
+  
+  // Démarrer la vérification IMMÉDIATEMENT
+  setTimeout(() => {
+    checkForNewDataInBackground();
+  }, 3000); // Seulement 3 secondes après activation
+  
+  // Configurer les écouteurs
+  setupBackgroundListeners();
+  
+  return Promise.resolve();
+}
 // === INITIALISATION SYNCHRO ARRIÈRE-PLAN ===
 function initializeBackgroundSync() {
   console.log('🔄 Initialisation synchronisation arrière-plan');
