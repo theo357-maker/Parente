@@ -9105,5 +9105,65 @@ class BackgroundSyncManager {
 
 // Exporter l'instance
 window.backgroundSyncManager = new BackgroundSyncManager();</script>
+<!-- Dans votre index.html, MODIFIEZ ces sections -->
+
+<!-- Service Worker UNIQUE et PRIORITAIRE -->
+<script>
+// REMPLACER votre bloc d'initialisation actuel par :
+if ('serviceWorker' in navigator) {
+  // Enregistrer IMMÉDIATEMENT au chargement
+  window.addEventListener('load', async () => {
+    try {
+      // ENREGISTRER DEUX Service Workers pour la redondance
+      const [mainSW, firebaseSW] = await Promise.all([
+        navigator.serviceWorker.register('sw-immediate.js', {
+          scope: '/',
+          updateViaCache: 'none' // TOUJOURS vérifier les mises à jour
+        }),
+        navigator.serviceWorker.register('firebase-sw-immediate.js', {
+          scope: '/firebase-cloud-messaging-push-scope'
+        })
+      ]);
+      
+      console.log('✅ Service Workers enregistrés:', {
+        main: mainSW,
+        firebase: firebaseSW
+      });
+      
+      // FORCER l'activation
+      if (mainSW.active) {
+        mainSW.active.postMessage({ type: 'ACTIVATE_NOW' });
+      }
+      
+      // Vérifier l'état toutes les 10 secondes
+      setInterval(() => {
+        checkServiceWorkerStatus();
+      }, 10000);
+      
+    } catch (error) {
+      console.error('❌ Erreur Service Worker:', error);
+      // Fallback: essayer le SW de base
+      navigator.serviceWorker.register('fallback-sw.js');
+    }
+  });
+  
+  // Vérifier l'état du Service Worker
+  async function checkServiceWorkerStatus() {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration && registration.active) {
+      console.log('✅ Service Worker actif - Notifications prêtes');
+      // Envoyer un ping pour maintenir actif
+      registration.active.postMessage({ type: 'PING', timestamp: Date.now() });
+    }
+  }
+  
+  // Écouter les messages du Service Worker
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data.type === 'READY') {
+      console.log('🚀 Service Worker prêt pour notifications');
+    }
+  });
+}
+</script>
 </body>
 </html>   
