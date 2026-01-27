@@ -31,61 +31,61 @@
   // === ICÔNES POUR NOTIFICATIONS ===
   "icons": [
     {
-      "src": "/icon-72x72.png",
+      "src": "icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-96x96.png",
+      "src": "icon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-128x128.png",
+      "src": "icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-144x144.png",
+      "src": "icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-152x152.png",
+      "src": "icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-192x192.png",
+      "src": "icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-384x384.png",
+      "src": "icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-512x512.png",
+      "src": "icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable badge"
     },
     {
-      "src": "/icon-maskable-192x192.png",
+      "src": "icon-maskable-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icon-maskable-512x512.png",
+      "src": "icon-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -95,28 +95,28 @@
   // === SCREENSHOTS POUR STORES PWA ===
   "screenshots": [
     {
-      "src": "/screenshots/dashboard.png",
+      "src": "dashboard.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Tableau de bord avec notifications"
     },
     {
-      "src": "/screenshots/notes.png",
+      "src": "notes.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Notes et cotes en temps réel"
     },
     {
-      "src": "/screenshots/notifications-system.png",
+      "src": "notifications-system.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Notifications système sur écran verrouillé"
     },
     {
-      "src": "/screenshots/communiques.png",
+      "src": "communiques.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
@@ -130,43 +130,43 @@
       "name": "Tableau de bord",
       "short_name": "Dashboard",
       "description": "Accéder au tableau de bord principal",
-      "url": "/index.html?page=dashboard",
-      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+      "url": "index.html?page=dashboard",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notes et cotes",
       "short_name": "Notes",
       "description": "Consulter les notes avec notifications temps réel",
-      "url": "/index.html?page=grades",
-      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+      "url": "index.html?page=grades",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Communiqués",
       "short_name": "Communiqués",
       "description": "Voir les communiqués et alertes de paiement",
-      "url": "/index.html?page=communiques",
-      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+      "url": "index.html?page=communiques",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notifications",
       "short_name": "Alertes",
       "description": "Gérer les notifications temps réel",
-      "url": "/index.html?page=notifications",
-      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+      "url": "index.html?page=notifications",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Nouvelle note",
       "short_name": "📊 Note",
       "description": "Voir les dernières notes publiées",
-      "url": "/index.html?page=grades&action=new",
-      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+      "url": "index.html?page=grades&action=new",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Incident urgent",
       "short_name": "⚠️ Incident",
       "description": "Consulter les incidents signalés",
-      "url": "/index.html?page=presence-incidents&filter=urgent",
-      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+      "url": "index.html?page=presence-incidents&filter=urgent",
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     }
   ],
   
@@ -174,17 +174,17 @@
   "protocol_handlers": [
     {
       "protocol": "web+cslacolombe",
-      "url": "/index.html?url=%s"
+      "url": "index.html?url=%s"
     },
     {
       "protocol": "mailto",
-      "url": "/index.html?page=communication&action=compose&to=%s"
+      "url": "index.html?page=communication&action=compose&to=%s"
     }
   ],
   
   // === SHARE TARGET ===
   "share_target": {
-    "action": "/index.html?page=communication&action=share",
+    "action": "index.html?page=communication&action=share",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
@@ -209,7 +209,7 @@
   // === FILE HANDLERS ===
   "file_handlers": [
     {
-      "action": "/index.html?page=communication&action=upload",
+      "action": "index.html?page=communication&action=upload",
       "accept": {
         "application/pdf": [".pdf"],
         "image/*": [".jpg", ".jpeg", ".png", ".gif"],
@@ -229,9 +229,9 @@
   
   // === BACKGROUND SERVICES ===
   "background": {
-    "service_worker": "/sw-immediate.js",
+    "service_worker": "sw-immediate.js",
     "type": "module",
-    "scripts": ["/firebase-messaging-sw.js", "/background-sync.js"]
+    "scripts": ["firebase-messaging-sw.js", "/background-sync.js"]
   },
   
   // === RELATED APPLICATIONS ===
@@ -253,13 +253,13 @@
   
   // === NOTIFICATION DISPLAY ===
   "notification_display": {
-    "badge": "/icon-72x72.png",
-    "icon": "/icon-192x192.png",
+    "badge": "icon-72x72.png",
+    "icon": "icon-192x192.png",
     "tag": "cslacolombe-notification",
     "renotify": true,
     "requireInteraction": true,
     "vibrate": [200, 100, 200],
-    "sound": "/notification.mp3",
+    "sound": "notification.mp3",
     "actions": [
       {
         "action": "view",
@@ -302,7 +302,7 @@
   "app_links": {
     "web": {
       "should_fallback": false,
-      "url": "https://parent.cslacolombe.edu"
+      "url": "https://theo357-maker.github.io/parente/"
     }
   },
   
