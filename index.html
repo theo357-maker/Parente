@@ -9242,5 +9242,22 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+    <script>
+        // Bouton d'assistant dans le header
+const assistantBtn = document.createElement('button');
+assistantBtn.innerHTML = '🤖 Assistant IA';
+assistantBtn.onclick = () => openAIAssistant();
+
+function openAIAssistant() {
+  const question = prompt('Posez votre question sur la scolarité...');
+  const assistant = new AIEducationalAssistant();
+  const response = assistant.answerQuestion(question, {
+    studentId: currentChild.matricule,
+    context: 'parent'
+  });
+  
+  showAIDialog(response);
+}
+    </script>
 </body>
 </html>   
