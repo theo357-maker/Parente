@@ -1,0 +1,8 @@
+{
+  "name": "cs-lacolombe-parent-immediate",
+  "version": "2.3.1",
+  "scripts": {
+    "build": "echo 'Build optimisé pour notifications immédiates'",
+    "deploy": "echo 'Déploiement avec cache invalidation'"
+  }
+}
