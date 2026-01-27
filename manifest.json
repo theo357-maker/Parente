@@ -1,7 +1,7 @@
 {
   "name": "Espace Parent - CS La Colombe",
   "short_name": "CS La Colombe",
-  "description": "Application de suivi scolaire pour les parents",
+  "description": "Application de suivi scolaire pour les parents - Notifications en temps réel",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#3498db",
@@ -12,190 +12,336 @@
   "dir": "ltr",
   "categories": ["education", "productivity", "utilities"],
   "prefer_related_applications": false,
-   CONFIGURATION PUSH
-  "push": {
-    "applicationServerKey": "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM"
-  },
   
-  // MODIFIER icons
-  "icons": [
-    {
-      "src": "/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable badge"
-    },
-    {
-      "src": "/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable badge"
-    }
+  // === CONFIGURATION PUSH NOTIFICATIONS ===
+  "gcm_sender_id": "103953800507", // Identifiant Firebase Cloud Messaging
+  "gcm_user_visible_only": true, // Toutes les notifications doivent être visibles
+  
+  // Clé VAPID pour les notifications push Web
+  "applicationServerKey": "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM",
+  
+  // Permissions nécessaires pour les notifications
+  "permissions": [
+    "notifications",
+    "background-sync",
+    "periodic-background-sync",
+    "push"
   ],
   
-  // AJOUTER screenshots pour les stores
-  "screenshots": [
-    {
-      "src": "/screenshots/notifications.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "label": "Notifications système"
-    }
-  ]
-}
-
+  // === ICÔNES POUR NOTIFICATIONS ===
   "icons": [
     {
       "src": "/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
     },
     {
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any maskable badge"
+    },
+    {
+      "src": "/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   
+  // === SCREENSHOTS POUR STORES PWA ===
   "screenshots": [
     {
       "src": "/screenshots/dashboard.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Tableau de bord"
+      "label": "Tableau de bord avec notifications"
     },
     {
       "src": "/screenshots/notes.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Notes et cotes"
+      "label": "Notes et cotes en temps réel"
+    },
+    {
+      "src": "/screenshots/notifications-system.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Notifications système sur écran verrouillé"
     },
     {
       "src": "/screenshots/communiques.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Communiqués"
+      "label": "Communiqués avec alertes push"
     }
   ],
   
+  // === SHORTCUTS POUR ACCÈS RAPIDE ===
   "shortcuts": [
     {
       "name": "Tableau de bord",
       "short_name": "Dashboard",
-      "description": "Accéder au tableau de bord",
+      "description": "Accéder au tableau de bord principal",
       "url": "/index.html?page=dashboard",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notes et cotes",
       "short_name": "Notes",
-      "description": "Consulter les notes des enfants",
+      "description": "Consulter les notes avec notifications temps réel",
       "url": "/index.html?page=grades",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Communiqués",
       "short_name": "Communiqués",
-      "description": "Voir les communiqués de paiement",
+      "description": "Voir les communiqués et alertes de paiement",
       "url": "/index.html?page=communiques",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notifications",
       "short_name": "Alertes",
-      "description": "Voir les notifications",
+      "description": "Gérer les notifications temps réel",
       "url": "/index.html?page=notifications",
+      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Nouvelle note",
+      "short_name": "📊 Note",
+      "description": "Voir les dernières notes publiées",
+      "url": "/index.html?page=grades&action=new",
+      "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Incident urgent",
+      "short_name": "⚠️ Incident",
+      "description": "Consulter les incidents signalés",
+      "url": "/index.html?page=presence-incidents&filter=urgent",
       "icons": [{ "src": "/icon-96x96.png", "sizes": "96x96" }]
     }
   ],
   
+  // === PROTOCOLE HANDLER ===
   "protocol_handlers": [
     {
       "protocol": "web+cslacolombe",
       "url": "/index.html?url=%s"
+    },
+    {
+      "protocol": "mailto",
+      "url": "/index.html?page=communication&action=compose&to=%s"
     }
   ],
   
+  // === SHARE TARGET ===
   "share_target": {
-    "action": "/index.html",
-    "method": "GET",
-    "enctype": "application/x-www-form-urlencoded",
+    "action": "/index.html?page=communication&action=share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
     "params": {
       "title": "title",
       "text": "text",
-      "url": "url"
+      "url": "url",
+      "files": [
+        {
+          "name": "documents",
+          "accept": ["application/pdf", "image/*", ".doc", ".docx"]
+        }
+      ]
     }
   },
   
+  // === LAUNCH HANDLER ===
   "launch_handler": {
-    "client_mode": "focus-existing"
+    "client_mode": "focus-existing",
+    "route_to": "existing-client-retain"
   },
   
+  // === FILE HANDLERS ===
   "file_handlers": [
     {
-      "action": "/parent.html",
+      "action": "/index.html?page=communication&action=upload",
       "accept": {
         "application/pdf": [".pdf"],
-        "image/*": [".jpg", ".jpeg", ".png", ".gif"]
+        "image/*": [".jpg", ".jpeg", ".png", ".gif"],
+        "application/msword": [".doc", ".docx"],
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"]
       }
     }
   ],
   
-  "display_override": ["window-controls-overlay", "minimal-ui"],
+  // === DISPLAY OVERRIDE ===
+  "display_override": ["window-controls-overlay", "minimal-ui", "standalone"],
   
+  // === EDGE SIDE PANEL ===
   "edge_side_panel": {
     "preferred_width": 400
   },
   
-  "permissions": [
-    "notifications",
-    "background-sync",
-    "periodic-background-sync"
+  // === BACKGROUND SERVICES ===
+  "background": {
+    "service_worker": "/sw-immediate.js",
+    "type": "module",
+    "scripts": ["/firebase-messaging-sw.js", "/background-sync.js"]
+  },
+  
+  // === RELATED APPLICATIONS ===
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "com.cslacolombe.parent",
+      "url": "https://play.google.com/store/apps/details?id=com.cslacolombe.parent"
+    },
+    {
+      "platform": "itunes",
+      "id": "id123456789",
+      "url": "https://apps.apple.com/app/id123456789"
+    }
   ],
   
-  "background": {
-    "service_worker": "sw.js",
-    "type": "module"
-  }
+  // === SCREEN ORIENTATION ===
+  "screen_orientation": "portrait",
+  
+  // === NOTIFICATION DISPLAY ===
+  "notification_display": {
+    "badge": "/icon-72x72.png",
+    "icon": "/icon-192x192.png",
+    "tag": "cslacolombe-notification",
+    "renotify": true,
+    "requireInteraction": true,
+    "vibrate": [200, 100, 200],
+    "sound": "/notification.mp3",
+    "actions": [
+      {
+        "action": "view",
+        "title": "👁️ Voir"
+      },
+      {
+        "action": "dismiss",
+        "title": "❌ Fermer"
+      },
+      {
+        "action": "reply",
+        "title": "💬 Répondre",
+        "icon": "/reply-icon.png"
+      }
+    ]
+  },
+  
+  // === OFFLINE SUPPORT ===
+  "offline_enabled": true,
+  
+  // === PREFER RELATED APPLICATIONS ===
+  "prefer_related_applications": false,
+  
+  // === IARC RATING ===
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  
+  // === VERSION INFO ===
+  "version": "2.3.1",
+  "version_name": "Notifications Temps Réel",
+  
+  // === SPLASH SCREEN ===
+  "splash_screen": {
+    "background_color": "#3498db",
+    "image": "/splash-640x1136.png",
+    "image_dark": "/splash-dark-640x1136.png",
+    "form_factor": "wide"
+  },
+  
+  // === APP LINKS ===
+  "app_links": {
+    "web": {
+      "should_fallback": false,
+      "url": "https://parent.cslacolombe.edu"
+    }
+  },
+  
+  // === HANDLER EXCLUSIONS ===
+  "handler_exclusions": {
+    "email": ["gmail.com", "outlook.com"],
+    "maps": ["google.com/maps"],
+    "music": ["spotify.com"],
+    "video": ["youtube.com"]
+  },
+  
+  // === NEW FEATURES ===
+  "user_preferences": {
+    "color_scheme": "light dark",
+    "reduced_motion": "no-preference"
+  },
+  
+  // === SCREEN CAPTURE ===
+  "display_capture": {
+    "allow": ["window", "display"]
+  },
+  
+  // === CONTENT INDEXING ===
+  "content_indexing": {
+    "enabled": true,
+    "scope": "/"
+  },
+  
+  // === INSTALLATION HINTS ===
+  "install_hints": {
+    "features": [
+      "notifications-temps-reel",
+      "travail-hors-ligne",
+      "raccourcis-application",
+      "partage-fichiers"
+    ],
+    "screens": 6
+  },
+  
+  // === UPDATE MODE ===
+  "update_mode": "auto"
 }
