@@ -19,9 +19,7 @@
   <meta name="theme-color" content="#3498db">
 
    <!-- Service Worker et mise à jour -->
-    <meta name="version" content="2.1.0">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
+   
   <!-- Apple Touch Icons -->
   <link rel="apple-touch-icon" href="icon-192x192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="icon-192x192.png">
@@ -36,8 +34,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <!-- Scripts de mise à jour -->
+<script src="update-system.js"></script>
 
-    <!-- AJOUTER CETTE SECTION DANS LE <head> DE VOTRE INDEX.HTML -->
+<!-- AJOUTER CETTE SECTION DANS LE <head> DE VOTRE INDEX.HTML -->
 <script>
 // ==============================================
 // SCRIPT D'INITIALISATION FIREBASE POUR BACKGROUND
@@ -351,7 +350,6 @@ window.initializeFirebaseBackgroundNotifications = initializeFirebaseBackgroundN
 window.sendTestNotificationViaFirebase = sendTestNotificationViaFirebase;
 window.testBackgroundNotification = testBackgroundNotification;
 </script>
-<script src="update-system.js"></script>
 
 <!-- Configuration notifications arrière-plan -->
 <script>
@@ -2321,31 +2319,92 @@ window.getNotificationStatus = checkBackgroundNotificationStatus;
                                     </button>
 
                                 </div>
-<!-- Ajouter dans votre profil ou dans une nouvelle section -->
-<div class="card" id="background-notifications-card">
-  <h3><i class="fas fa-bell-slash"></i> Notifications Arrière-plan</h3>
+<!-- Ajouter dans votre page de profil ou dashboard -->
+<div class="card" style="margin-top: 20px;">
+  <h4><i class="fas fa-bell"></i> Test Notifications Arrière-plan</h4>
   
-  <div class="form-group">
-    <label>Statut des notifications arrière-plan:</label>
-    <div id="background-status" class="alert alert-info">
-      <i class="fas fa-spinner fa-spin"></i> Vérification en cours...
-    </div>
+  <div class="alert alert-info" id="notification-test-status">
+    <i class="fas fa-spinner fa-spin"></i> Vérification en cours...
   </div>
   
   <div class="form-group">
+    <button id="test-background-notification-btn" class="btn btn-warning">
+      <i class="fas fa-vial"></i> Tester une notification arrière-plan
+    </button>
+    
     <button id="enable-background-btn" class="btn btn-success">
-      <i class="fas fa-bell"></i> Activer les notifications arrière-plan
-    </button>
-    
-    <button id="test-background-btn" class="btn btn-warning">
-      <i class="fas fa-vial"></i> Tester les notifications
-    </button>
-    
-    <button id="check-status-btn" class="btn btn-info">
-      <i class="fas fa-info-circle"></i> Vérifier le statut
+      <i class="fas fa-power-off"></i> Activer les notifications
     </button>
   </div>
   
+  <div id="test-instructions" style="display: none; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+    <h5>Instructions de test :</h5>
+    <ol>
+      <li>Cliquez sur "Tester une notification"</li>
+      <li>Fermez complètement l'application sur votre téléphone</li>
+      <li>Attendez 30 secondes à 1 minute</li>
+      <li>La notification doit apparaître même avec l'app fermée</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+// Gestion des boutons de test
+document.addEventListener('DOMContentLoaded', function() {
+  const testBtn = document.getElementById('test-background-notification-btn');
+  const enableBtn = document.getElementById('enable-background-btn');
+  const statusDiv = document.getElementById('notification-test-status');
+  const instructionsDiv = document.getElementById('test-instructions');
+  
+  if (testBtn) {
+    testBtn.addEventListener('click', async () => {
+      testBtn.disabled = true;
+      testBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+      
+      await sendTestNotificationViaFirebase();
+      
+      // Afficher les instructions
+      instructionsDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        testBtn.disabled = false;
+        testBtn.innerHTML = '<i class="fas fa-vial"></i> Tester à nouveau';
+      }, 5000);
+    });
+  }
+  
+  if (enableBtn) {
+    enableBtn.addEventListener('click', async () => {
+      enableBtn.disabled = true;
+      enableBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activation...';
+      
+      const result = await initializeFirebaseBackgroundNotifications();
+      
+      if (result.success) {
+        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Notifications activées !';
+        statusDiv.className = 'alert alert-success';
+      } else {
+        statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> Erreur: ${result.error}`;
+        statusDiv.className = 'alert alert-danger';
+        enableBtn.disabled = false;
+        enableBtn.innerHTML = '<i class="fas fa-power-off"></i> Réessayer';
+      }
+    });
+  }
+  
+  // Vérifier l'état au chargement
+  setTimeout(() => {
+    const token = localStorage.getItem('fcm_token');
+    if (token) {
+      statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Notifications configurées';
+      statusDiv.className = 'alert alert-success';
+    } else {
+      statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Notifications non activées';
+      statusDiv.className = 'alert alert-warning';
+    }
+  }, 3000);
+});
+</script>
   <div id="background-controls" class="hidden">
     <h4>Configuration avancée</h4>
     
