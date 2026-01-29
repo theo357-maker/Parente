@@ -1,35 +1,67 @@
 {
   "name": "Espace Parent - CS La Colombe",
-  "short_name": "CS La Colombe",
-  "description": "Application de suivi scolaire pour les parents - Notifications en temps réel",
+  "short_name": "CS Parent",
+  "description": "Application de suivi scolaire avec notifications temps réel même quand l'app est fermée",
   "start_url": "index.html",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "fullscreen"],
   "background_color": "#3498db",
   "theme_color": "#3498db",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "scope": "/",
   "lang": "fr-FR",
   "dir": "ltr",
-  "categories": ["education", "productivity", "utilities"],
-  "prefer_related_applications": false,
+  "categories": ["education", "productivity"],
   
-  // === CONFIGURATION PUSH NOTIFICATIONS ===
-  "gcm_sender_id": "103953800507", // Identifiant Firebase Cloud Messaging
-  "gcm_user_visible_only": true, // Toutes les notifications doivent être visibles
+  // === VERSION ET IDENTIFICATION ===
+  "version": "2.5.0",
+  "version_name": "Notifications Arrière-plan",
+  "id": "/?source=pwa",
   
-  // Clé VAPID pour les notifications push Web
-  "applicationServerKey": "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM",
+  // === SERVICE WORKER POUR NOTIFICATIONS ARRIÈRE-PLAN ===
+  "background": {
+    "service_worker": "sw-background.js",
+    "type": "module",
+    "persistent": true,
+    "scripts": ["sw-background.js"]
+  },
   
-  // Permissions nécessaires pour les notifications
+  // === PERMISSIONS ESSENTIELLES POUR ARRIÈRE-PLAN ===
   "permissions": [
     "notifications",
+    "background",
     "background-sync",
     "periodic-background-sync",
-    "push"
+    "idle",
+    "storage",
+    "clipboard-read",
+    "clipboard-write"
   ],
   
-  // === ICÔNES POUR NOTIFICATIONS ===
+  // === FONCTIONNALITÉS ACTIVÉES ===
+  "features": [
+    "background-sync",
+    "periodic-background-sync",
+    "push",
+    "idle-detection",
+    "share"
+  ],
+  
+  // === FIREBASE PUSH NOTIFICATIONS ===
+  "gcm_sender_id": "103953800507",
+  "gcm_user_visible_only": true,
+  
+  // VAPID KEY pour notifications Web Push
+  "applicationServerKey": "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM",
+  
+  // === ICÔNES PWA COMPLÈTES ===
   "icons": [
+    {
+      "src": "icon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "icon-72x72.png",
       "sizes": "72x72",
@@ -40,25 +72,25 @@
       "src": "icon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-192x192.png",
@@ -67,174 +99,189 @@
       "purpose": "any maskable badge"
     },
     {
+      "src": "icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
       "src": "icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-maskable-192x192.png",
+      "src": "maskable-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icon-maskable-512x512.png",
+      "src": "maskable-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
   
-  // === SCREENSHOTS POUR STORES PWA ===
+  // === SPLASH SCREEN POUR ANDROID/IOS ===
+  "splash_pages": null,
+  "splash_screen": {
+    "background_color": "#3498db",
+    "image": "splash-640x1136.png",
+    "image_dark": "splash-dark-640x1136.png",
+    "form_factor": "wide"
+  },
+  
+  // === ÉCRANS DE PRÉSENTATION PWA STORES ===
   "screenshots": [
     {
-      "src": "dashboard.png",
+      "src": "screenshots/dashboard-phone.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Tableau de bord avec notifications"
     },
     {
-      "src": "notes.png",
+      "src": "screenshots/notifications-phone.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Notes et cotes en temps réel"
+      "label": "Notifications temps réel"
     },
     {
-      "src": "notifications-system.png",
+      "src": "screenshots/grades-phone.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Notifications système sur écran verrouillé"
-    },
-    {
-      "src": "communiques.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Communiqués avec alertes push"
+      "label": "Notes et cotes"
     }
   ],
   
-  // === SHORTCUTS POUR ACCÈS RAPIDE ===
+  // === RACCOURCIS PWA (ACCÈS RAPIDE) ===
   "shortcuts": [
     {
       "name": "Tableau de bord",
       "short_name": "Dashboard",
       "description": "Accéder au tableau de bord principal",
-      "url": "index.html?page=dashboard",
+      "url": "/?shortcut=dashboard",
       "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Notes et cotes",
-      "short_name": "Notes",
-      "description": "Consulter les notes avec notifications temps réel",
-      "url": "index.html?page=grades",
+      "name": "Nouvelles notes",
+      "short_name": "📊 Notes",
+      "description": "Voir les dernières notes publiées",
+      "url": "/?page=grades&filter=new",
       "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Communiqués",
-      "short_name": "Communiqués",
-      "description": "Voir les communiqués et alertes de paiement",
-      "url": "index.html?page=communiques",
+      "name": "Incidents urgents",
+      "short_name": "⚠️ Incidents",
+      "description": "Consulter les incidents signalés",
+      "url": "/?page=presence-incidents&filter=urgent",
       "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Notifications",
-      "short_name": "Alertes",
-      "description": "Gérer les notifications temps réel",
-      "url": "index.html?page=notifications",
+      "short_name": "🔔 Alertes",
+      "description": "Voir toutes les notifications",
+      "url": "/?page=notifications",
       "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Nouvelle note",
-      "short_name": "📊 Note",
-      "description": "Voir les dernières notes publiées",
-      "url": "index.html?page=grades&action=new",
-      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Incident urgent",
-      "short_name": "⚠️ Incident",
-      "description": "Consulter les incidents signalés",
-      "url": "index.html?page=presence-incidents&filter=urgent",
+      "name": "Communiqués",
+      "short_name": "📄 Paiements",
+      "description": "Voir les communiqués de paiement",
+      "url": "/?page=communiques",
       "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     }
   ],
   
-  // === PROTOCOLE HANDLER ===
+  // === PROTOCOLE PERSONNALISÉ ===
   "protocol_handlers": [
     {
       "protocol": "web+cslacolombe",
-      "url": "index.html?url=%s"
-    },
-    {
-      "protocol": "mailto",
-      "url": "index.html?page=communication&action=compose&to=%s"
+      "url": "/?protocol=%s"
     }
   ],
   
-  // === SHARE TARGET ===
+  // === PARTAGE DE CONTENU ===
   "share_target": {
-    "action": "index.html?page=communication&action=share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
+    "action": "/?action=share",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
     "params": {
       "title": "title",
       "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "documents",
-          "accept": ["application/pdf", "image/*", ".doc", ".docx"]
-        }
-      ]
+      "url": "url"
     }
   },
   
-  // === LAUNCH HANDLER ===
-  "launch_handler": {
-    "client_mode": "focus-existing",
-    "route_to": "existing-client-retain"
-  },
-  
-  // === FILE HANDLERS ===
+  // === GESTIONNAIRE DE FICHIERS ===
   "file_handlers": [
     {
-      "action": "index.html?page=communication&action=upload",
+      "action": "/?action=upload",
       "accept": {
         "application/pdf": [".pdf"],
-        "image/*": [".jpg", ".jpeg", ".png", ".gif"],
-        "application/msword": [".doc", ".docx"],
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"]
+        "image/*": [".png", ".jpg", ".jpeg", ".gif"],
+        "application/msword": [".doc", ".docx"]
       }
     }
   ],
   
-  // === DISPLAY OVERRIDE ===
-  "display_override": ["window-controls-overlay", "minimal-ui", "standalone"],
-  
-  // === EDGE SIDE PANEL ===
-  "edge_side_panel": {
-    "preferred_width": 400
+  // === LAUNCH HANDLER POUR GESTION DES FENÊTRES ===
+  "launch_handler": {
+    "client_mode": "focus-existing",
+    "route_to": "existing-client-navigate"
   },
   
-  // === BACKGROUND SERVICES ===
-  "background": {
-    "service_worker": "sw-immediate.js",
-    "type": "module",
-    "scripts": ["firebase-messaging-sw.js", "/background-sync.js"]
+  // === TAILLE MINIMALE DE FENÊTRE ===
+  "window_controls_overlay": {
+    "title_color": "#ffffff",
+    "icon_color": "#3498db",
+    "background_color": "#3498db",
+    "enabled": true
   },
   
-  // === RELATED APPLICATIONS ===
+  // === CONFIGURATION SPÉCIFIQUE ANDROID ===
+  "android_package_name": "com.cslacolombe.parent",
+  "prefer_related_applications": false,
+  
+  // === CONFIGURATION SPÉCIFIQUE IOS ===
+  "apple": {
+    "webAppCapable": true,
+    "webAppStatusBarStyle": "black-translucent",
+    "touchIcon": "icon-192x192.png",
+    "precomposedTouchIcon": "icon-192x192.png"
+  },
+  
+  // === CONFIGURATION MICROSOFT ===
+  "microsoft": {
+    "tileColor": "#3498db",
+    "tileImage": "icon-144x144.png",
+    "badge": "icon-72x72.png"
+  },
+  
+  // === CONFIGURATION TWITTER ===
+  "twitter": {
+    "card": "summary_large_image",
+    "site": "@cslacolombe",
+    "creator": "@cslacolombe"
+  },
+  
+  // === CONFIGURATION FACEBOOK ===
+  "facebook": {
+    "app_id": "YOUR_FACEBOOK_APP_ID"
+  },
+  
+  // === OPTIONS AVANCÉES ===
+  "prefer_related_applications": false,
   "related_applications": [
     {
       "platform": "play",
@@ -248,18 +295,21 @@
     }
   ],
   
-  // === SCREEN ORIENTATION ===
-  "screen_orientation": "portrait",
+  // === CONFIGURATION OFFLINE ===
+  "offline_enabled": true,
   
-  // === NOTIFICATION DISPLAY ===
-  "notification_display": {
+  // === CONFIGURATION CACHE ===
+  "cache_busting": {
+    "mode": "version",
+    "value": "2.5.0"
+  },
+  
+  // === NOTIFICATIONS SYSTÈME ===
+  "notification": {
     "badge": "icon-72x72.png",
     "icon": "icon-192x192.png",
-    "tag": "cslacolombe-notification",
-    "renotify": true,
-    "requireInteraction": true,
-    "vibrate": [200, 100, 200],
     "sound": "notification.mp3",
+    "vibrate": [200, 100, 200],
     "actions": [
       {
         "action": "view",
@@ -270,78 +320,123 @@
         "title": "❌ Fermer"
       },
       {
-        "action": "reply",
-        "title": "💬 Répondre",
-        "icon": "/reply-icon.png"
+        "action": "snooze",
+        "title": "⏰ Rappeler plus tard"
       }
     ]
   },
   
-  // === OFFLINE SUPPORT ===
-  "offline_enabled": true,
+  // === PERMISSIONS DÉTAILLÉES ===
+  "optional_permissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
   
-  // === PREFER RELATED APPLICATIONS ===
-  "prefer_related_applications": false,
-  
-  // === IARC RATING ===
-  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
-  
-  // === VERSION INFO ===
-  "version": "2.3.1",
-  "version_name": "Notifications Temps Réel",
-  
-  // === SPLASH SCREEN ===
-  "splash_screen": {
-    "background_color": "#3498db",
-    "image": "/splash-640x1136.png",
-    "image_dark": "/splash-dark-640x1136.png",
-    "form_factor": "wide"
+  // === CONFIGURATION DE SÉCURITÉ ===
+  "content_security_policy": {
+    "default-src": ["'self'", "https://*.firebaseio.com", "https://*.googleapis.com"],
+    "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://*.googleapis.com", "https://www.gstatic.com"],
+    "style-src": ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+    "img-src": ["'self'", "data:", "https:", "blob:"],
+    "connect-src": ["'self'", "https://*.firebaseio.com", "https://*.googleapis.com", "wss://*.firebaseio.com"],
+    "font-src": ["'self'", "https://cdnjs.cloudflare.com"],
+    "media-src": ["'self'", "data:"],
+    "object-src": ["'none'"],
+    "frame-src": ["'none'"],
+    "worker-src": ["'self'", "blob:"],
+    "manifest-src": ["'self'"],
+    "form-action": ["'self'"],
+    "base-uri": ["'self'"],
+    "frame-ancestors": ["'none'"],
+    "block-all-mixed-content": true,
+    "upgrade-insecure-requests": true
   },
   
-  // === APP LINKS ===
-  "app_links": {
-    "web": {
-      "should_fallback": false,
-      "url": "https://theo357-maker.github.io/parente/"
-    }
-  },
-  
-  // === HANDLER EXCLUSIONS ===
-  "handler_exclusions": {
-    "email": ["gmail.com", "outlook.com"],
-    "maps": ["google.com/maps"],
-    "music": ["spotify.com"],
-    "video": ["youtube.com"]
-  },
-  
-  // === NEW FEATURES ===
+  // === PRÉFÉRENCES UTILISATEUR ===
   "user_preferences": {
     "color_scheme": "light dark",
-    "reduced_motion": "no-preference"
+    "reduced_motion": "no-preference",
+    "reduced_transparency": "no-preference"
   },
   
-  // === SCREEN CAPTURE ===
-  "display_capture": {
-    "allow": ["window", "display"]
-  },
-  
-  // === CONTENT INDEXING ===
+  // === INDEXATION CONTENT ===
   "content_indexing": {
     "enabled": true,
     "scope": "/"
   },
   
-  // === INSTALLATION HINTS ===
-  "install_hints": {
-    "features": [
-      "notifications-temps-reel",
-      "travail-hors-ligne",
-      "raccourcis-application",
-      "partage-fichiers"
-    ],
-    "screens": 6
+  // === CONFIGURATION DE LANCEMENT ===
+  "launch": {
+    "location": "standalone",
+    "size": {
+      "width": 414,
+      "height": 736
+    }
   },
   
-  // === UPDATE MODE ===
-  "update_mode": "auto"
+  // === CONFIGURATION INSTALLATION ===
+  "install": {
+    "description": "Application de suivi scolaire avec notifications temps réel",
+    "screens": 5,
+    "features": [
+      "Notifications en arrière-plan",
+      "Travail hors ligne",
+      "Raccourcis d'application",
+      "Synchronisation automatique"
+    ],
+    "categories": ["education"],
+    "icons": ["icon-192x192.png", "icon-512x512.png"]
+  },
+  
+  // === OPTIONS DE DÉVELOPPEMENT ===
+  "developer": {
+    "name": "CS La Colombe",
+    "url": "https://cslacolombe.edu"
+  },
+  
+  // === CONFIGURATION DE SERVICE WORKER ===
+  "serviceworker": {
+    "src": "sw-background.js",
+    "scope": "/",
+    "use_cache": true,
+    "update_via_cache": "none"
+  },
+  
+  // === CONFIGURATION DE MISE À JOUR ===
+  "update": {
+    "mode": "auto",
+    "frequency": "hourly"
+  },
+  
+  // === CONFIGURATION RÉSEAU ===
+  "network": {
+    "cors": {
+      "allow": ["https://*.firebaseio.com", "https://*.googleapis.com"]
+    }
+  },
+  
+  // === BADGE CONFIGURATION ===
+  "badge": {
+    "src": "icon-72x72.png",
+    "sizes": "72x72",
+    "type": "image/png"
+  },
+  
+  // === FILE SYSTEM ACCESS ===
+  "file_system_access": false,
+  
+  // === GEOLOCATION ===
+  "geolocation": false,
+  
+  // === MEDIA CAPTURE ===
+  "media_capture": false,
+  
+  // === PAYMENT HANDLER ===
+  "payment_handler": false,
+  
+  // === CONFIGURATION FINALE ===
+  "handle_links": "preferred",
+  "scope_extensions": [],
+  "isolation": "none"
 }
