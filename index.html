@@ -9728,5 +9728,199 @@ async function setupCompleteBackgroundSystem() {
 // Dans onAuthStateChanged, après currentParent = {...} :
 setTimeout(setupCompleteBackgroundSystem, 2000);
 </script>
+<script>
+
+// Script d'initialisation des notifications arrière-plan
+class BackgroundNotificationManager {
+  constructor() {
+    this.registration = null;
+    this.isInitialized = false;
+  }
+  
+  async initialize() {
+    console.log('🚀 Initialisation notifications arrière-plan...');
+    
+    // 1. Vérifier le support
+    if (!this.checkSupport()) {
+      console.warn('⚠️ Notifications arrière-plan non supportées');
+      return false;
+    }
+    
+    // 2. Demander les permissions
+    if (!await this.requestPermission()) {
+      console.warn('⚠️ Permissions refusées');
+      return false;
+    }
+    
+    // 3. Enregistrer le Service Worker
+    this.registration = await this.registerServiceWorker();
+    
+    if (!this.registration) {
+      console.error('❌ Échec enregistrement Service Worker');
+      return false;
+    }
+    
+    // 4. Sauvegarder les données parent
+    if (currentParent) {
+      await this.saveParentData();
+    }
+    
+    // 5. Tester le système
+    setTimeout(() => this.testSystem(), 5000);
+    
+    this.isInitialized = true;
+    console.log('✅ Notifications arrière-plan activées');
+    
+    return true;
+  }
+  
+  checkSupport() {
+    const support = {
+      serviceWorker: 'serviceWorker' in navigator,
+      pushManager: 'PushManager' in window,
+      notifications: 'Notification' in window,
+      backgroundSync: 'BackgroundSync' in window,
+      periodicSync: 'periodicSync' in navigator.serviceWorker
+    };
+    
+    console.log('📋 Support navigateur:', support);
+    
+    return support.serviceWorker && support.pushManager;
+  }
+  
+  async requestPermission() {
+    if (Notification.permission === 'granted') {
+      return true;
+    }
+    
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  }
+  
+  async registerServiceWorker() {
+    try {
+      const registration = await navigator.serviceWorker.register('sw-background.js', {
+        scope: '/',
+        updateViaCache: 'none'
+      });
+      
+      console.log('✅ Service Worker enregistré:', registration);
+      
+      // Attendre l'activation
+      await new Promise((resolve) => {
+        if (registration.active) {
+          resolve();
+        } else if (registration.installing) {
+          registration.installing.addEventListener('statechange', () => {
+            if (registration.active) resolve();
+          });
+        }
+      });
+      
+      return registration;
+      
+    } catch (error) {
+      console.error('❌ Erreur enregistrement SW:', error);
+      return null;
+    }
+  }
+  
+  async saveParentData() {
+    if (!currentParent || !this.registration?.active) return;
+    
+    const parentData = {
+      matricule: currentParent.matricule,
+      fullName: currentParent.fullName,
+      email: currentParent.email,
+      phone: currentParent.phone,
+      children: childrenList.map(child => ({
+        matricule: child.matricule,
+        fullName: child.fullName,
+        class: child.class,
+        type: child.type
+      }))
+    };
+    
+    try {
+      // Envoyer au Service Worker
+      this.registration.active.postMessage({
+        type: 'SAVE_PARENT_DATA',
+        data: parentData
+      });
+      
+      // Sauvegarder localement
+      localStorage.setItem('parent_background_data', JSON.stringify(parentData));
+      
+      console.log('💾 Données parent sauvegardées');
+      
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde données:', error);
+    }
+  }
+  
+  async testSystem() {
+    if (!this.registration?.active) return;
+    
+    console.log('🧪 Test système notifications...');
+    
+    try {
+      const channel = new MessageChannel();
+      
+      this.registration.active.postMessage({
+        type: 'TEST_NOTIFICATION'
+      }, [channel.port2]);
+      
+      console.log('✅ Test envoyé au Service Worker');
+      
+    } catch (error) {
+      console.error('❌ Erreur test:', error);
+    }
+  }
+  
+  async getStatus() {
+    if (!this.registration?.active) return null;
+    
+    try {
+      const channel = new MessageChannel();
+      
+      return new Promise((resolve) => {
+        channel.port1.onmessage = (event) => {
+          resolve(event.data);
+        };
+        
+        this.registration.active.postMessage({
+          type: 'GET_STATUS'
+        }, [channel.port2]);
+      });
+      
+    } catch (error) {
+      console.error('❌ Erreur statut:', error);
+      return null;
+    }
+  }
+  
+  async triggerCheck() {
+    if (!this.registration?.active) return;
+    
+    this.registration.active.postMessage({
+      type: 'CHECK_NOW'
+    });
+  }
+}
+
+// Initialiser le gestionnaire
+window.backgroundNotifications = new BackgroundNotificationManager();
+
+// Démarrer automatiquement après chargement
+document.addEventListener('DOMContentLoaded', async () => {
+  // Attendre que l'app soit prête
+  setTimeout(async () => {
+    if (currentParent) {
+      console.log('⏳ Démarrage notifications arrière-plan...');
+      await window.backgroundNotifications.initialize();
+    }
+  }, 3000);
+});
+</script>
 </body>
 </html>   
