@@ -2004,7 +2004,113 @@ window.getNotificationStatus = checkBackgroundNotificationStatus;
                                     <button type="button" id="test-notification-btn" class="btn btn-warning btn-sm">
                                         <i class="fas fa-paper-plane"></i> Tester une notification
                                     </button>
+
                                 </div>
+<!-- Ajouter dans votre profil ou dans une nouvelle section -->
+<div class="card" id="background-notifications-card">
+  <h3><i class="fas fa-bell-slash"></i> Notifications Arrière-plan</h3>
+  
+  <div class="form-group">
+    <label>Statut des notifications arrière-plan:</label>
+    <div id="background-status" class="alert alert-info">
+      <i class="fas fa-spinner fa-spin"></i> Vérification en cours...
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <button id="enable-background-btn" class="btn btn-success">
+      <i class="fas fa-bell"></i> Activer les notifications arrière-plan
+    </button>
+    
+    <button id="test-background-btn" class="btn btn-warning">
+      <i class="fas fa-vial"></i> Tester les notifications
+    </button>
+    
+    <button id="check-status-btn" class="btn btn-info">
+      <i class="fas fa-info-circle"></i> Vérifier le statut
+    </button>
+  </div>
+  
+  <div id="background-controls" class="hidden">
+    <h4>Configuration avancée</h4>
+    
+    <div class="form-group">
+      <label>Fréquence de vérification:</label>
+      <select id="check-frequency" class="form-control">
+        <option value="5">Toutes les 5 minutes</option>
+        <option value="10" selected>Toutes les 10 minutes</option>
+        <option value="15">Toutes les 15 minutes</option>
+        <option value="30">Toutes les 30 minutes</option>
+        <option value="60">Toutes les heures</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Types de notifications:</label>
+      <div class="form-check">
+        <input type="checkbox" id="notify-grades" class="form-check-input" checked>
+        <label class="form-check-label" for="notify-grades">Nouvelles notes</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="notify-incidents" class="form-check-input" checked>
+        <label class="form-check-label" for="notify-incidents">Incidents</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="notify-homework" class="form-check-input" checked>
+        <label class="form-check-label" for="notify-homework">Devoirs</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="notify-presence" class="form-check-input">
+        <label class="form-check-label" for="notify-presence">Présences</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="notify-communiques" class="form-check-input" checked>
+        <label class="form-check-label" for="notify-communiques">Communiqués</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Gestion du contrôle des notifications arrière-plan
+document.addEventListener('DOMContentLoaded', function() {
+  const enableBtn = document.getElementById('enable-background-btn');
+  const testBtn = document.getElementById('test-background-btn');
+  const statusBtn = document.getElementById('check-status-btn');
+  const statusDiv = document.getElementById('background-status');
+  
+  if (enableBtn) {
+    enableBtn.addEventListener('click', async () => {
+      enableBtn.disabled = true;
+      enableBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activation...';
+      
+      const success = await window.enableBackgroundNotifications();
+      
+      if (success) {
+        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Notifications arrière-plan activées';
+        statusDiv.className = 'alert alert-success';
+      } else {
+        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Échec de l\'activation';
+        statusDiv.className = 'alert alert-danger';
+        enableBtn.disabled = false;
+        enableBtn.innerHTML = '<i class="fas fa-bell"></i> Réessayer';
+      }
+    });
+  }
+  
+  if (testBtn) {
+    testBtn.addEventListener('click', () => {
+      window.testBackgroundNotifications();
+    });
+  }
+  
+  if (statusBtn) {
+    statusBtn.addEventListener('click', () => {
+      window.getNotificationStatus();
+    });
+  }
+});
+</script>
                                 <div id="notification-status" style="margin-top: 10px; font-size: 0.9rem;"></div>
                             </div>
                             <button type="submit" class="btn btn-primary">Mettre à jour le profil</button>
@@ -4419,6 +4525,8 @@ onAuthStateChanged(auth, async (user) => {
         const snap = await getDocs(q);
         if (!snap.empty) {
             currentParent = { id: snap.docs[0].id, ...snap.docs[0].data() };
+
+setTimeout(setupCompleteBackgroundSystem, 2000);
             document.getElementById('login-overlay').classList.add('hidden');
             document.getElementById('app-root').classList.remove('hidden');
             document.getElementById('parent-name').textContent = currentParent.fullName;
@@ -9548,5 +9656,77 @@ function openAIAssistant() {
   showAIDialog(response);
 }
     </script>
+<script>
+
+// Dans votre code principal, après la connexion
+async function setupCompleteBackgroundSystem() {
+  console.log('🚀 Configuration complète notifications arrière-plan');
+  
+  // 1. Vérifier et demander les permissions
+  if (Notification.permission === 'default') {
+    const result = await Notification.requestPermission();
+    if (result !== 'granted') {
+      console.log('⚠️ Permissions notifications refusées');
+      return;
+    }
+  }
+  
+  // 2. Enregistrer le Service Worker
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('sw-background.js');
+      
+      // Attendre l'activation
+      await new Promise(resolve => {
+        if (registration.active) {
+          resolve();
+        } else {
+          registration.addEventListener('activate', resolve);
+        }
+      });
+      
+      // 3. Sauvegarder les données
+      if (currentParent) {
+        const parentData = {
+          matricule: currentParent.matricule,
+          fullName: currentParent.fullName,
+          children: childrenList.map(child => ({
+            matricule: child.matricule,
+            fullName: child.fullName,
+            class: child.class,
+            type: child.type
+          }))
+        };
+        
+        // Envoyer au Service Worker
+        registration.active.postMessage({
+          type: 'SAVE_PARENT_DATA',
+          data: parentData
+        });
+        
+        console.log('✅ Données parent envoyées pour notifications arrière-plan');
+      }
+      
+      // 4. Programmer des vérifications périodiques
+      setInterval(() => {
+        if (registration.active) {
+          registration.active.postMessage({
+            type: 'CHECK_NOW'
+          });
+        }
+      }, 10 * 60 * 1000); // Toutes les 10 minutes
+      
+      console.log('✅ Système notifications arrière-plan activé');
+      
+    } catch (error) {
+      console.error('❌ Erreur activation arrière-plan:', error);
+    }
+  }
+}
+
+// Appeler cette fonction après la connexion réussie
+// Dans onAuthStateChanged, après currentParent = {...} :
+setTimeout(setupCompleteBackgroundSystem, 2000);
+</script>
 </body>
 </html>   
