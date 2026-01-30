@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -21,8 +21,8 @@
    <!-- Service Worker et mise à jour -->
     <meta name="version" content="2.1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
 
-   
   <!-- Apple Touch Icons -->
   <link rel="apple-touch-icon" href="icon-192x192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="icon-192x192.png">
@@ -39,322 +39,7 @@
 <!-- Scripts de mise à jour -->
 <script src="update-system.js"></script>
 
-<!-- AJOUTER CETTE SECTION DANS LE <head> DE VOTRE INDEX.HTML -->
-<script>
-// ==============================================
-// SCRIPT D'INITIALISATION FIREBASE POUR BACKGROUND
-// ==============================================
-
-// 1. CONFIGURATION FIREBASE (MÊME QUE LE SW)
-const firebaseConfig = {
-  apiKey: "AIzaSyBn7VIddclO7KtrXb5sibCr9SjVLjOy-qI",
-  authDomain: "theo1d.firebaseapp.com",
-  projectId: "theo1d",
-  storageBucket: "theo1d.firebasestorage.app",
-  messagingSenderId: "269629842962",
-  appId: "1:269629842962:web:a80a12b04448fe1e595acb",
-  measurementId: "G-TNSG1XFMDZ"
-};
-
-// 2. VAPID KEY POUR WEB PUSH
-const vapidKey = "BFc44CIL4VykUiY8_17s_HbUm5pRqhNhlFcy35H0XKuyFIq-2472MTfMZBfKMxW81DCHTkRB4xy_WaH-f3Ik2TM";
-
-// 3. FONCTION D'INITIALISATION PRINCIPALE
-async function initializeFirebaseBackgroundNotifications() {
-  console.log('🚀 Initialisation notifications arrière-plan...');
   
-  try {
-    // ÉTAPE 1: Vérifier le support
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      console.error('❌ Navigateur non supporté pour notifications');
-      return false;
-    }
-    
-    // ÉTAPE 2: Demander la permission
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      console.warn('⚠️ Permission notifications refusée');
-      return false;
-    }
-    
-    console.log('✅ Permission notifications accordée');
-    
-    // ÉTAPE 3: Enregistrer le Service Worker FIREBASE
-    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js', {
-      scope: './',
-      updateViaCache: 'none'
-    });
-    
-    console.log('✅ Service Worker Firebase enregistré:', registration.scope);
-    
-    // Attendre que le SW soit actif
-    if (registration.active) {
-      console.log('✅ Service Worker actif');
-    } else if (registration.installing) {
-      await new Promise(resolve => {
-        registration.installing.addEventListener('statechange', (e) => {
-          if (e.target.state === 'activated') {
-            console.log('✅ Service Worker activé');
-            resolve();
-          }
-        });
-      });
-    }
-    
-    // ÉTAPE 4: Initialiser Firebase dans la page
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-      console.log('✅ Firebase initialisé dans la page');
-    }
-    
-    const messaging = firebase.messaging();
-    
-    // ÉTAPE 5: Obtenir le token FCM
-    const token = await messaging.getToken({
-      vapidKey: vapidKey,
-      serviceWorkerRegistration: registration
-    });
-    
-    if (token) {
-      console.log('✅ Token FCM obtenu:', token.substring(0, 20) + '...');
-      
-      // SAUVEGARDER LE TOKEN
-      await saveFCMToken(token);
-      
-      // CONFIGURER LES ÉCOUTEURS
-      setupFirebaseListeners(messaging, token);
-      
-      // TESTER IMMÉDIATEMENT
-      setTimeout(() => testBackgroundNotification(registration), 3000);
-      
-      return { success: true, token: token };
-    } else {
-      console.error('❌ Impossible d\'obtenir le token FCM');
-      return { success: false, error: 'No token' };
-    }
-    
-  } catch (error) {
-    console.error('❌ Erreur initialisation Firebase:', error);
-    return { success: false, error: error.message };
-  }
-}
-
-// 4. SAUVEGARDER LE TOKEN FCM
-async function saveFCMToken(token) {
-  try {
-    // Sauvegarder dans localStorage
-    localStorage.setItem('fcm_token', token);
-    localStorage.setItem('fcm_token_time', Date.now().toString());
-    
-    console.log('💾 Token FCM sauvegardé localement');
-    
-    // Sauvegarder dans Firestore si connecté
-    if (currentParent && typeof db !== 'undefined') {
-      try {
-        const parentRef = doc(db, 'parents', currentParent.matricule);
-        await updateDoc(parentRef, {
-          fcmToken: token,
-          notificationEnabled: true,
-          lastTokenUpdate: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        console.log('✅ Token sauvegardé dans Firestore');
-      } catch (firestoreError) {
-        console.warn('⚠️ Impossible de sauvegarder dans Firestore:', firestoreError);
-      }
-    }
-    
-  } catch (error) {
-    console.error('❌ Erreur sauvegarde token:', error);
-  }
-}
-
-// 5. CONFIGURER LES ÉCOUTEURS FIREBASE
-function setupFirebaseListeners(messaging, token) {
-  // Écouter les messages en PREMIER PLAN (quand l'app est ouverte)
-  messaging.onMessage((payload) => {
-    console.log('📨 Message reçu en premier plan:', payload);
-    
-    // Afficher une notification toast
-    showNotificationToast(
-      payload.notification?.title || 'Notification',
-      payload.notification?.body || 'Nouveau message',
-      payload.data || {}
-    );
-  });
-  
-  // Vérifier périodiquement que le token est valide
-  setInterval(async () => {
-    try {
-      const currentToken = await messaging.getToken({ vapidKey: vapidKey });
-      if (currentToken !== token) {
-        console.log('🔄 Token FCM mis à jour');
-        await saveFCMToken(currentToken);
-        token = currentToken;
-      }
-    } catch (error) {
-      console.warn('⚠️ Erreur vérification token:', error);
-    }
-  }, 30 * 60 * 1000); // Toutes les 30 minutes
-}
-
-// 6. TESTER LES NOTIFICATIONS ARRIÈRE-PLAN
-async function testBackgroundNotification(registration) {
-  console.log('🧪 Test notification arrière-plan...');
-  
-  try {
-    // Envoyer un message au Service Worker
-    if (registration.active) {
-      registration.active.postMessage({
-        type: 'TEST_NOTIFICATION'
-      });
-      
-      console.log('✅ Test envoyé au Service Worker');
-      
-      // Tester aussi avec une notification système
-      if (Notification.permission === 'granted') {
-        const notification = new Notification('✅ Test réussi', {
-          body: 'Les notifications arrière-plan sont configurées',
-          icon: './icon-192x192.png',
-          tag: 'background-test',
-          requireInteraction: true
-        });
-        
-        notification.onclick = () => {
-          window.focus();
-          notification.close();
-        };
-      }
-    }
-  } catch (error) {
-    console.error('❌ Erreur test:', error);
-  }
-}
-
-// 7. FONCTION POUR ENVOYER UNE NOTIFICATION DE TEST VIA FIREBASE
-async function sendTestNotificationViaFirebase() {
-  try {
-    const token = localStorage.getItem('fcm_token');
-    
-    if (!token) {
-      alert('Aucun token FCM trouvé. Initialisez d\'abord les notifications.');
-      return;
-    }
-    
-    console.log('📤 Envoi notification test via Firebase...');
-    
-    // ENVOYER LA NOTIFICATION VOTRE BACKEND
-    // Exemple avec fetch (vous devez adapter à votre backend)
-    const response = await fetch('https://votre-backend.com/send-test-notification', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: token,
-        title: '✅ Test notification arrière-plan',
-        body: 'Cette notification vient de Firebase et fonctionne même quand l\'app est fermée !',
-        data: {
-          type: 'test',
-          page: 'dashboard',
-          timestamp: new Date().toISOString()
-        }
-      })
-    });
-    
-    if (response.ok) {
-      console.log('✅ Notification test envoyée');
-      alert('Notification test envoyée ! Vérifiez votre téléphone dans 30 secondes.');
-    } else {
-      throw new Error('Erreur serveur');
-    }
-    
-  } catch (error) {
-    console.error('❌ Erreur envoi test:', error);
-    alert('Erreur: ' + error.message);
-  }
-}
-
-// 8. DÉMARRER AUTOMATIQUEMENT
-document.addEventListener('DOMContentLoaded', function() {
-  // Attendre que Firebase soit chargé
-  const checkFirebase = setInterval(() => {
-    if (typeof firebase !== 'undefined') {
-      clearInterval(checkFirebase);
-      
-      // Initialiser après 2 secondes
-      setTimeout(() => {
-        // Seulement si l'utilisateur est connecté
-        if (currentParent) {
-          console.log('⏳ Démarrage automatique notifications...');
-          initializeFirebaseBackgroundNotifications()
-            .then(result => {
-              if (result.success) {
-                console.log('🎉 Notifications arrière-plan activées avec succès');
-                
-                // Ajouter un badge "actif" dans l'interface
-                addNotificationStatusBadge(true);
-              }
-            })
-            .catch(error => {
-              console.error('❌ Échec initialisation:', error);
-              addNotificationStatusBadge(false);
-            });
-        }
-      }, 2000);
-    }
-  }, 500);
-});
-
-// 9. AJOUTER UN BADGE DE STATUT DANS L'INTERFACE
-function addNotificationStatusBadge(enabled) {
-  const badge = document.createElement('div');
-  badge.id = 'notification-status-badge';
-  badge.style.position = 'fixed';
-  badge.style.bottom = '70px';
-  badge.style.right = '10px';
-  badge.style.zIndex = '9999';
-  badge.style.padding = '8px 12px';
-  badge.style.borderRadius = '20px';
-  badge.style.fontSize = '12px';
-  badge.style.fontWeight = 'bold';
-  badge.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-  
-  if (enabled) {
-    badge.innerHTML = '🔔 Actif';
-    badge.style.background = '#27ae60';
-    badge.style.color = 'white';
-  } else {
-    badge.innerHTML = '🔕 Inactif';
-    badge.style.background = '#e74c3c';
-    badge.style.color = 'white';
-  }
-  
-  badge.onclick = () => {
-    if (enabled) {
-      sendTestNotificationViaFirebase();
-    } else {
-      initializeFirebaseBackgroundNotifications();
-    }
-  };
-  
-  document.body.appendChild(badge);
-}
-
-// 10. FONCTION UTILITAIRE POUR AFFICHER LES NOTIFICATIONS
-function showNotificationToast(title, body, data) {
-  // Votre fonction existante pour les toasts
-  // ...
-}
-
-// ==============================================
-// EXPOSER LES FONCTIONS GLOBALEMENT
-// ==============================================
-window.initializeFirebaseBackgroundNotifications = initializeFirebaseBackgroundNotifications;
-window.sendTestNotificationViaFirebase = sendTestNotificationViaFirebase;
-window.testBackgroundNotification = testBackgroundNotification;
-</script>
-
-
 
     <style>
         :root {
@@ -1257,6 +942,30 @@ window.testBackgroundNotification = testBackgroundNotification;
             }
         }
     </style>
+
+<!-- Notification System -->
+<script src="firebase-notifications.js"></script>
+<script src="notification-manager.js"></script>
+
+<!-- Initialisation automatique -->
+<script>
+  // Initialiser après connexion
+  if (window.currentParent) {
+    setTimeout(() => {
+      window.notificationManager.initialize();
+    }, 3000);
+  }
+  
+  // Tester les notifications (optionnel)
+  window.testNotifications = function() {
+    if (window.notificationManager) {
+      window.notificationManager.test();
+    }
+    if (window.firebaseNotifications) {
+      window.firebaseNotifications.testNotification();
+    }
+  };
+</script>
 </head>
 <body>
     <!-- Écran de connexion -->
@@ -2031,174 +1740,7 @@ window.testBackgroundNotification = testBackgroundNotification;
                                     <button type="button" id="test-notification-btn" class="btn btn-warning btn-sm">
                                         <i class="fas fa-paper-plane"></i> Tester une notification
                                     </button>
-
                                 </div>
-<!-- Ajouter dans votre page de profil ou dashboard -->
-<div class="card" style="margin-top: 20px;">
-  <h4><i class="fas fa-bell"></i> Test Notifications Arrière-plan</h4>
-  
-  <div class="alert alert-info" id="notification-test-status">
-    <i class="fas fa-spinner fa-spin"></i> Vérification en cours...
-  </div>
-  
-  <div class="form-group">
-    <button id="test-background-notification-btn" class="btn btn-warning">
-      <i class="fas fa-vial"></i> Tester une notification arrière-plan
-    </button>
-    
-    <button id="enable-background-btn" class="btn btn-success">
-      <i class="fas fa-power-off"></i> Activer les notifications
-    </button>
-  </div>
-  
-  <div id="test-instructions" style="display: none; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
-    <h5>Instructions de test :</h5>
-    <ol>
-      <li>Cliquez sur "Tester une notification"</li>
-      <li>Fermez complètement l'application sur votre téléphone</li>
-      <li>Attendez 30 secondes à 1 minute</li>
-      <li>La notification doit apparaître même avec l'app fermée</li>
-    </ol>
-  </div>
-</div>
-
-<script>
-// Gestion des boutons de test
-document.addEventListener('DOMContentLoaded', function() {
-  const testBtn = document.getElementById('test-background-notification-btn');
-  const enableBtn = document.getElementById('enable-background-btn');
-  const statusDiv = document.getElementById('notification-test-status');
-  const instructionsDiv = document.getElementById('test-instructions');
-  
-  if (testBtn) {
-    testBtn.addEventListener('click', async () => {
-      testBtn.disabled = true;
-      testBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
-      
-      await sendTestNotificationViaFirebase();
-      
-      // Afficher les instructions
-      instructionsDiv.style.display = 'block';
-      
-      setTimeout(() => {
-        testBtn.disabled = false;
-        testBtn.innerHTML = '<i class="fas fa-vial"></i> Tester à nouveau';
-      }, 5000);
-    });
-  }
-  
-  if (enableBtn) {
-    enableBtn.addEventListener('click', async () => {
-      enableBtn.disabled = true;
-      enableBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activation...';
-      
-      const result = await initializeFirebaseBackgroundNotifications();
-      
-      if (result.success) {
-        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Notifications activées !';
-        statusDiv.className = 'alert alert-success';
-      } else {
-        statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> Erreur: ${result.error}`;
-        statusDiv.className = 'alert alert-danger';
-        enableBtn.disabled = false;
-        enableBtn.innerHTML = '<i class="fas fa-power-off"></i> Réessayer';
-      }
-    });
-  }
-  
-  // Vérifier l'état au chargement
-  setTimeout(() => {
-    const token = localStorage.getItem('fcm_token');
-    if (token) {
-      statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Notifications configurées';
-      statusDiv.className = 'alert alert-success';
-    } else {
-      statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Notifications non activées';
-      statusDiv.className = 'alert alert-warning';
-    }
-  }, 3000);
-});
-</script>
-  <div id="background-controls" class="hidden">
-    <h4>Configuration avancée</h4>
-    
-    <div class="form-group">
-      <label>Fréquence de vérification:</label>
-      <select id="check-frequency" class="form-control">
-        <option value="5">Toutes les 5 minutes</option>
-        <option value="10" selected>Toutes les 10 minutes</option>
-        <option value="15">Toutes les 15 minutes</option>
-        <option value="30">Toutes les 30 minutes</option>
-        <option value="60">Toutes les heures</option>
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <label>Types de notifications:</label>
-      <div class="form-check">
-        <input type="checkbox" id="notify-grades" class="form-check-input" checked>
-        <label class="form-check-label" for="notify-grades">Nouvelles notes</label>
-      </div>
-      <div class="form-check">
-        <input type="checkbox" id="notify-incidents" class="form-check-input" checked>
-        <label class="form-check-label" for="notify-incidents">Incidents</label>
-      </div>
-      <div class="form-check">
-        <input type="checkbox" id="notify-homework" class="form-check-input" checked>
-        <label class="form-check-label" for="notify-homework">Devoirs</label>
-      </div>
-      <div class="form-check">
-        <input type="checkbox" id="notify-presence" class="form-check-input">
-        <label class="form-check-label" for="notify-presence">Présences</label>
-      </div>
-      <div class="form-check">
-        <input type="checkbox" id="notify-communiques" class="form-check-input" checked>
-        <label class="form-check-label" for="notify-communiques">Communiqués</label>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// Gestion du contrôle des notifications arrière-plan
-document.addEventListener('DOMContentLoaded', function() {
-  const enableBtn = document.getElementById('enable-background-btn');
-  const testBtn = document.getElementById('test-background-btn');
-  const statusBtn = document.getElementById('check-status-btn');
-  const statusDiv = document.getElementById('background-status');
-  
-  if (enableBtn) {
-    enableBtn.addEventListener('click', async () => {
-      enableBtn.disabled = true;
-      enableBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activation...';
-      
-      const success = await window.enableBackgroundNotifications();
-      
-      if (success) {
-        statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Notifications arrière-plan activées';
-        statusDiv.className = 'alert alert-success';
-      } else {
-        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Échec de l\'activation';
-        statusDiv.className = 'alert alert-danger';
-        enableBtn.disabled = false;
-        enableBtn.innerHTML = '<i class="fas fa-bell"></i> Réessayer';
-      }
-    });
-  }
-  
-  if (testBtn) {
-    testBtn.addEventListener('click', () => {
-      window.testBackgroundNotifications();
-    });
-  }
-  
-  if (statusBtn) {
-    statusBtn.addEventListener('click', () => {
-      window.getNotificationStatus();
-    });
-  }
-});
-</script>
                                 <div id="notification-status" style="margin-top: 10px; font-size: 0.9rem;"></div>
                             </div>
                             <button type="submit" class="btn btn-primary">Mettre à jour le profil</button>
@@ -2522,8 +2064,8 @@ async function setupFirebaseMessaging() {
   if (!navigator.serviceWorker.controller) {
     try {
       // Enregistrer le SW unifié
-      const registration = await navigator.serviceWorker.register('sw.js', {
-        scope: '/',
+      const registration = await navigator.serviceWorker.register('./sw.js', {
+        scope: './',
         updateViaCache: 'none' // Toujours vérifier les mises à jour
       });
       
@@ -4613,8 +4155,6 @@ onAuthStateChanged(auth, async (user) => {
         const snap = await getDocs(q);
         if (!snap.empty) {
             currentParent = { id: snap.docs[0].id, ...snap.docs[0].data() };
-
-setTimeout(setupCompleteBackgroundSystem, 2000);
             document.getElementById('login-overlay').classList.add('hidden');
             document.getElementById('app-root').classList.remove('hidden');
             document.getElementById('parent-name').textContent = currentParent.fullName;
@@ -8695,7 +8235,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       // Enregistrer le service worker
-      const registration = await navigator.serviceWorker.register('sw.js');
+      const registration = await navigator.serviceWorker.register('./sw.js');
       console.log('✅ Service Worker enregistré avec succès:', registration);
 
       // Vérifier l'installation de l'application
@@ -9744,271 +9284,9 @@ function openAIAssistant() {
   showAIDialog(response);
 }
     </script>
-<script>
-
-// Dans votre code principal, après la connexion
-async function setupCompleteBackgroundSystem() {
-  console.log('🚀 Configuration complète notifications arrière-plan');
-  
-  // 1. Vérifier et demander les permissions
-  if (Notification.permission === 'default') {
-    const result = await Notification.requestPermission();
-    if (result !== 'granted') {
-      console.log('⚠️ Permissions notifications refusées');
-      return;
-    }
-  }
-  
-  // 2. Enregistrer le Service Worker
-  if ('serviceWorker' in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register('sw-background.js');
-      
-      // Attendre l'activation
-      await new Promise(resolve => {
-        if (registration.active) {
-          resolve();
-        } else {
-          registration.addEventListener('activate', resolve);
-        }
-      });
-      
-      // 3. Sauvegarder les données
-      if (currentParent) {
-        const parentData = {
-          matricule: currentParent.matricule,
-          fullName: currentParent.fullName,
-          children: childrenList.map(child => ({
-            matricule: child.matricule,
-            fullName: child.fullName,
-            class: child.class,
-            type: child.type
-          }))
-        };
-        
-        // Envoyer au Service Worker
-        registration.active.postMessage({
-          type: 'SAVE_PARENT_DATA',
-          data: parentData
-        });
-        
-        console.log('✅ Données parent envoyées pour notifications arrière-plan');
-      }
-      
-      // 4. Programmer des vérifications périodiques
-      setInterval(() => {
-        if (registration.active) {
-          registration.active.postMessage({
-            type: 'CHECK_NOW'
-          });
-        }
-      }, 10 * 60 * 1000); // Toutes les 10 minutes
-      
-      console.log('✅ Système notifications arrière-plan activé');
-      
-    } catch (error) {
-      console.error('❌ Erreur activation arrière-plan:', error);
-    }
-  }
-}
-
-// Appeler cette fonction après la connexion réussie
-// Dans onAuthStateChanged, après currentParent = {...} :
-setTimeout(setupCompleteBackgroundSystem, 2000);
-</script>
-<script>
-
-// Script d'initialisation des notifications arrière-plan
-class BackgroundNotificationManager {
-  constructor() {
-    this.registration = null;
-    this.isInitialized = false;
-  }
-  
-  async initialize() {
-    console.log('🚀 Initialisation notifications arrière-plan...');
-    
-    // 1. Vérifier le support
-    if (!this.checkSupport()) {
-      console.warn('⚠️ Notifications arrière-plan non supportées');
-      return false;
-    }
-    
-    // 2. Demander les permissions
-    if (!await this.requestPermission()) {
-      console.warn('⚠️ Permissions refusées');
-      return false;
-    }
-    
-    // 3. Enregistrer le Service Worker
-    this.registration = await this.registerServiceWorker();
-    
-    if (!this.registration) {
-      console.error('❌ Échec enregistrement Service Worker');
-      return false;
-    }
-    
-    // 4. Sauvegarder les données parent
-    if (currentParent) {
-      await this.saveParentData();
-    }
-    
-    // 5. Tester le système
-    setTimeout(() => this.testSystem(), 5000);
-    
-    this.isInitialized = true;
-    console.log('✅ Notifications arrière-plan activées');
-    
-    return true;
-  }
-  
-  checkSupport() {
-    const support = {
-      serviceWorker: 'serviceWorker' in navigator,
-      pushManager: 'PushManager' in window,
-      notifications: 'Notification' in window,
-      backgroundSync: 'BackgroundSync' in window,
-      periodicSync: 'periodicSync' in navigator.serviceWorker
-    };
-    
-    console.log('📋 Support navigateur:', support);
-    
-    return support.serviceWorker && support.pushManager;
-  }
-  
-  async requestPermission() {
-    if (Notification.permission === 'granted') {
-      return true;
-    }
-    
-    const permission = await Notification.requestPermission();
-    return permission === 'granted';
-  }
-  
-  async registerServiceWorker() {
-    try {
-      const registration = await navigator.serviceWorker.register('sw-background.js', {
-        scope: '/',
-        updateViaCache: 'none'
-      });
-      
-      console.log('✅ Service Worker enregistré:', registration);
-      
-      // Attendre l'activation
-      await new Promise((resolve) => {
-        if (registration.active) {
-          resolve();
-        } else if (registration.installing) {
-          registration.installing.addEventListener('statechange', () => {
-            if (registration.active) resolve();
-          });
-        }
-      });
-      
-      return registration;
-      
-    } catch (error) {
-      console.error('❌ Erreur enregistrement SW:', error);
-      return null;
-    }
-  }
-  
-  async saveParentData() {
-    if (!currentParent || !this.registration?.active) return;
-    
-    const parentData = {
-      matricule: currentParent.matricule,
-      fullName: currentParent.fullName,
-      email: currentParent.email,
-      phone: currentParent.phone,
-      children: childrenList.map(child => ({
-        matricule: child.matricule,
-        fullName: child.fullName,
-        class: child.class,
-        type: child.type
-      }))
-    };
-    
-    try {
-      // Envoyer au Service Worker
-      this.registration.active.postMessage({
-        type: 'SAVE_PARENT_DATA',
-        data: parentData
-      });
-      
-      // Sauvegarder localement
-      localStorage.setItem('parent_background_data', JSON.stringify(parentData));
-      
-      console.log('💾 Données parent sauvegardées');
-      
-    } catch (error) {
-      console.error('❌ Erreur sauvegarde données:', error);
-    }
-  }
-  
-  async testSystem() {
-    if (!this.registration?.active) return;
-    
-    console.log('🧪 Test système notifications...');
-    
-    try {
-      const channel = new MessageChannel();
-      
-      this.registration.active.postMessage({
-        type: 'TEST_NOTIFICATION'
-      }, [channel.port2]);
-      
-      console.log('✅ Test envoyé au Service Worker');
-      
-    } catch (error) {
-      console.error('❌ Erreur test:', error);
-    }
-  }
-  
-  async getStatus() {
-    if (!this.registration?.active) return null;
-    
-    try {
-      const channel = new MessageChannel();
-      
-      return new Promise((resolve) => {
-        channel.port1.onmessage = (event) => {
-          resolve(event.data);
-        };
-        
-        this.registration.active.postMessage({
-          type: 'GET_STATUS'
-        }, [channel.port2]);
-      });
-      
-    } catch (error) {
-      console.error('❌ Erreur statut:', error);
-      return null;
-    }
-  }
-  
-  async triggerCheck() {
-    if (!this.registration?.active) return;
-    
-    this.registration.active.postMessage({
-      type: 'CHECK_NOW'
-    });
-  }
-}
-
-// Initialiser le gestionnaire
-window.backgroundNotifications = new BackgroundNotificationManager();
-
-// Démarrer automatiquement après chargement
-document.addEventListener('DOMContentLoaded', async () => {
-  // Attendre que l'app soit prête
-  setTimeout(async () => {
-    if (currentParent) {
-      console.log('⏳ Démarrage notifications arrière-plan...');
-      await window.backgroundNotifications.initialize();
-    }
-  }, 3000);
-});
-</script>
 </body>
-</html>   
+</html>    
+    
+    
+
+      
