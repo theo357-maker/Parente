@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Espace Parent - CS la Colombe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -19,9 +19,8 @@
   <meta name="theme-color" content="#3498db">
 
    <!-- Service Worker et mise à jour -->
-    <meta name="version" content="2.1.0">
+     <meta name="version" content="2.1.0">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-  
 
   <!-- Apple Touch Icons -->
   <link rel="apple-touch-icon" href="icon-192x192.png">
@@ -60,6 +59,10 @@
         .nav-menu { list-style: none; padding: 1rem 0; margin: 0; }
         .nav-menu li { position: relative; }
         .nav-menu li a { display: flex; align-items: center; gap: 12px; padding: 14px 20px; color: var(--dark); text-decoration: none; font-weight: 500; }
+
+
+
+
         .nav-menu li a.active, .nav-menu li a:hover { background: #eaf5fc; color: var(--primary); }
         .main-content { flex: 1; display: flex; flex-direction: column; }
         .app-header { background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
@@ -215,6 +218,43 @@
   justify-content: center;
   font-weight: bold;
   animation: pulse 1.5s infinite;
+}
+
+/* Styles pour les différentes couleurs de cotes primaires */
+.primary-grades-table .grade-excellent {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    font-weight: bold;
+}
+
+.primary-grades-table .grade-good {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    font-weight: bold;
+}
+
+.primary-grades-table .grade-poor {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    font-weight: bold;
+}
+
+/* Badge pour le statut */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-success {
+    background-color: var(--success);
+    color: white;
+}
+
+.badge-warning {
+    background-color: var(--warning);
+    color: white;
 }
 
 /* Badges sur les items du menu */
@@ -421,6 +461,97 @@
         .timetable-section { margin-bottom: 2rem; }
         .timetable-section:last-child { margin-bottom: 0; }
         
+
+/* Styles pour la gestion des périodes (Parent) */
+.period-management {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.period-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.period-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.period-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.period-btn:hover:not(.active) {
+    background: #eaf5fc;
+    border-color: var(--primary);
+}
+
+/* Tableau des cotes primaires (Parent) */
+.primary-grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.primary-grades-table th {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.primary-grades-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.primary-grades-table .course-header {
+    background-color: var(--info);
+    color: white;
+    font-weight: bold;
+}
+
+.primary-grades-table .cm-cell {
+    background-color: #fff8e1;
+    font-weight: 600;
+    color: #e67e22;
+}
+
+.primary-grades-table .co-cell {
+    background-color: #e8f5e9;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+.primary-grades-table .published-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.primary-grades-table .published {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.primary-grades-table .not-published {
+    background-color: #fff3cd;
+    color: #856404;
+}
         /* --- Styles pour les devoirs --- */
         .homework-list { margin-top: 1.5rem; }
         .homework-item { 
@@ -1315,54 +1446,43 @@
 </div>
                     
                     <!-- Sous-onglet: Cotes Primaire -->
-                    <div id="primary-grades-tab" class="sub-tab-content">
-                        <div class="form-group">
-                            <label for="primary-grades-child-selector"><strong>Sélectionner un enfant du primaire :</strong></label>
-                            <select id="primary-grades-child-selector" class="form-control"></select>
-                        </div>
-                        
-                        <div id="primary-grades-content" class="hidden">
-                            <div class="period-selector">
-                                <button class="period-btn active" data-period="1ère période">1ère Période</button>
-                                <button class="period-btn" data-period="2ème période">2ème Période</button>
-                                <button class="period-btn" data-period="3ème période">3ème Période</button>
-                                <button class="period-btn" data-period="4ème période">4ème Période</button>
-                                <button class="period-btn" data-period="5ème période">5ème Période</button>
-                            </div>
-                            
-                            <div class="loading" id="primary-grades-loading">
-                                <i class="fas fa-spinner"></i>
-                                <p>Chargement des cotes...</p>
-                            </div>
-                            
-                            <div id="primary-grades-container">
-                                <div class="table-container">
-                                    <table class="primary-grades-table">
-                                        <thead>
-                                            <tr>
-                                                <th>N°</th>
-                                                <th>Nom du cours</th>
-                                                <th>Cote Maximum (CM)</th>
-                                                <th>Cote Obtenue (CO)</th>
-                                                <th>Date de réception</th>
-                                                <th>Nom de l'enseignant</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="primary-grades-table-body">
-                                            <!-- Les cotes du primaire seront chargées ici -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            
-                            <div id="primary-grades-summary" class="card hidden" style="margin-top: 1.5rem;">
-                                <h4>Résumé des Cotes</h4>
-                                <div id="primary-grades-stats">
-                                    <!-- Les statistiques des cotes seront affichées ici -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div id="primary-grades-tab" class="sub-tab-content">
+    <div class="form-group">
+        <label for="primary-grades-child-selector"><strong>Sélectionner un enfant du primaire :</strong></label>
+        <select id="primary-grades-child-selector" class="form-control"></select>
+    </div>
+    
+    <div id="primary-grades-content" class="hidden">
+        <!-- Gestion des périodes -->
+        <div class="card period-management" style="margin-bottom: 1.5rem;">
+            <h4>Sélectionner la période</h4>
+            <div class="period-buttons" style="margin-top: 1rem;">
+                <button class="period-btn active" data-period="1ère P">1ère P</button>
+                <button class="period-btn" data-period="2ème P">2ème P</button>
+                <button class="period-btn" data-period="Examen S1">Examen S1</button>
+                <button class="period-btn" data-period="3ème P">3ème P</button>
+                <button class="period-btn" data-period="4ème P">4ème P</button>
+                <button class="period-btn" data-period="Examen S2">Examen S2</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="primary-grades-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Chargement des cotes...</p>
+        </div>
+        
+        <div id="primary-grades-container">
+            <!-- Le tableau sera généré dynamiquement ici -->
+        </div>
+        
+        <div id="primary-grades-summary" class="card hidden" style="margin-top: 1.5rem;">
+            <h4>Résumé des Cotes</h4>
+            <div id="primary-grades-stats">
+                <!-- Les statistiques des cotes seront affichées ici -->
+            </div>
+        </div>
+    </div>
+</div>
                     
                     <!-- Sous-onglet: Cotes Maternelle -->
                     <div id="kindergarten-grades-tab" class="sub-tab-content">
@@ -4224,6 +4344,46 @@ function markNotificationsAsRead(page) {
     localStorage.setItem('parent_read_notifications', JSON.stringify(readNotifications));
 }
 
+// Gestion du menu mobile améliorée
+document.getElementById('menu-toggle').addEventListener('click', function() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('active');
+    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
+});
+
+// Fermer le menu en cliquant à l'extérieur
+document.addEventListener('click', function(e) {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.getElementById('menu-toggle');
+    
+    if (!sidebar.contains(e.target) && 
+        !menuToggle.contains(e.target) && 
+        sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Fermer le menu en cliquant sur un lien
+document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', function() {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+});
+
+// Gestion du redimensionnement
+window.addEventListener('resize', function() {
+    const sidebar = document.querySelector('.sidebar');
+    if (window.innerWidth >= 768 && sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
 // Vérifier les notifications existantes
 async function checkExistingNotifications() {
     if (!currentParent) return;
@@ -5358,6 +5518,7 @@ let currentChildGrades = null;
 let currentGradesPeriod = 'P1';
 let childGradesData = {};
 
+
 // Initialiser les périodes pour les cotes secondaires
 function setupSecondaryGradesPeriods() {
     document.querySelectorAll('#secondary-grades-content .period-btn').forEach(btn => {
@@ -6267,25 +6428,25 @@ document.getElementById('download-grades-pdf-btn').addEventListener('click', asy
 });
 
 
+// Fonction pour charger les cotes primaires (version corrigée)
 async function loadPrimaryGrades(studentId, period) {
     showLoading('primary-grades-loading');
-    const tableBody = document.getElementById('primary-grades-table-body');
-    const summaryContainer = document.getElementById('primary-grades-summary');
-    const statsContainer = document.getElementById('primary-grades-stats');
-    
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Chargement des cotes...</td></tr>';
-    summaryContainer.classList.add('hidden');
+    const container = document.getElementById('primary-grades-container');
+    container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Chargement des cotes...</p></div>';
     
     try {
         const child = childrenList.find(c => c.matricule === studentId);
         if (!child || child.type !== 'primary') {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Enfant non trouvé ou non du primaire</td></tr>';
+            container.innerHTML = '<div class="no-data"><i class="fas fa-exclamation-circle"></i><p>Enfant non trouvé ou non du primaire</p></div>';
             hideLoading('primary-grades-loading');
             return;
         }
         
+        console.log(`🔍 Recherche cotes pour ${studentId}, période ${period}`);
+        
+        // ESSAI 1: Chercher dans primary_grades (cotes enregistrées par l'enseignant)
         const gradesQuery = query(
-            collection(db, 'primary_published_grades'),
+            collection(db, 'primary_grades'),
             where('studentId', '==', studentId),
             where('period', '==', period)
         );
@@ -6293,114 +6454,355 @@ async function loadPrimaryGrades(studentId, period) {
         const gradesSnap = await getDocs(gradesQuery);
         
         if (gradesSnap.empty) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center;">
-                        <div class="no-data">
-                            <i class="fas fa-chart-bar"></i>
-                            <p>Aucune cote publiée pour la ${period}</p>
-                        </div>
-                    </td>
-                </tr>
-            `;
+            console.log(`❌ Aucune cote trouvée dans primary_grades`);
+            
+            // ESSAI 2: Chercher dans primary_published_grades (cotes officiellement publiées)
+            const publishedQuery = query(
+                collection(db, 'primary_published_grades'),
+                where('studentId', '==', studentId),
+                where('period', '==', period)
+            );
+            
+            const publishedSnap = await getDocs(publishedQuery);
+            
+            if (publishedSnap.empty) {
+                console.log(`❌ Aucune cote trouvée dans primary_published_grades`);
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Aucune cote disponible</h3>
+                        <p>L'enseignant n'a pas encore enregistré de cotes pour la période ${period}</p>
+                        <p><small>Vérifiez avec l'enseignant si les cotes ont été saisies.</small></p>
+                    </div>
+                `;
+                hideLoading('primary-grades-loading');
+                return;
+            }
+            
+            // Traiter les données publiées
+            console.log(`✅ Cotes trouvées dans primary_published_grades: ${publishedSnap.size}`);
+            await processPublishedGrades(publishedSnap, container, period);
             hideLoading('primary-grades-loading');
             return;
         }
         
-        let allGrades = [];
-        let totalMax = 0;
-        let totalObtained = 0;
-        
-        gradesSnap.forEach(doc => {
-            const gradeData = doc.data();
-            const publishedDate = gradeData.publishedAt ? 
-                new Date(gradeData.publishedAt.toDate()).toLocaleDateString('fr-FR') : 'Non spécifiée';
-            
-            gradeData.grades.forEach(courseGrade => {
-                allGrades.push({
-                    courseName: courseGrade.courseName,
-                    maxGrade: courseGrade.maxGrade,
-                    obtainedGrade: courseGrade.obtainedGrade,
-                    teacherName: courseGrade.teacherName,
-                    publishedDate: publishedDate
-                });
-                
-                totalMax += courseGrade.maxGrade;
-                totalObtained += courseGrade.obtainedGrade;
-            });
-        });
-        
-        if (allGrades.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Aucune cote trouvée</td></tr>';
-            hideLoading('primary-grades-loading');
-            return;
-        }
-        
-        let html = '';
-        allGrades.forEach((grade, index) => {
-            const percentage = (grade.obtainedGrade / grade.maxGrade) * 100;
-            const gradeClass = percentage >= 50 ? 'grade-green' : 'grade-red';
-            
-            html += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${grade.courseName}</td>
-                    <td>${grade.maxGrade}</td>
-                    <td class="${gradeClass}">${grade.obtainedGrade}</td>
-                    <td>${grade.publishedDate}</td>
-                    <td>${grade.teacherName}</td>
-                </tr>
-            `;
-        });
-        
-        tableBody.innerHTML = html;
-        
-        // Afficher le résumé
-        const overallPercentage = totalMax > 0 ? (totalObtained / totalMax * 100).toFixed(2) : 0;
-        const averagePerCourse = allGrades.length > 0 ? (totalObtained / allGrades.length).toFixed(2) : 0;
-        
-        statsContainer.innerHTML = `
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">${allGrades.length}</div>
-                    <div class="stat-label">Cours évalués</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${totalObtained.toFixed(2)}/${totalMax}</div>
-                    <div class="stat-label">Total Points</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${overallPercentage}%</div>
-                    <div class="stat-label">Pourcentage</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${averagePerCourse}</div>
-                    <div class="stat-label">Moyenne/Cours</div>
-                </div>
-            </div>
-        `;
-        
-        summaryContainer.classList.remove('hidden');
+        // Traiter les données enregistrées (non publiées)
+        console.log(`✅ Cotes trouvées dans primary_grades: ${gradesSnap.size}`);
+        await processGradesFromPrimaryGrades(gradesSnap, container, period);
         hideLoading('primary-grades-loading');
         
         // Marquer les notifications comme lues
         markNotificationsAsRead('grades');
         
     } catch (error) {
-        console.error('Erreur chargement cotes primaire:', error);
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align: center;">
-                    <div class="no-data">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Erreur de chargement des cotes</p>
-                    </div>
-                </td>
-            </tr>
+        console.error('❌ Erreur chargement cotes primaires:', error);
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Erreur de chargement</h3>
+                <p>Erreur technique: ${error.message}</p>
+                <p><small>Veuillez réessayer plus tard ou contacter l'administration.</small></p>
+            </div>
         `;
         hideLoading('primary-grades-loading');
     }
 }
+
+// Fonction pour traiter les cotes depuis primary_grades
+async function processGradesFromPrimaryGrades(gradesSnap, container, period) {
+    const allGrades = [];
+    
+    for (const doc of gradesSnap.docs) {
+        const gradeData = doc.data();
+        console.log('📊 Données cote:', gradeData);
+        
+        try {
+            // Obtenir le nom du cours
+            let courseName = 'Cours inconnu';
+            let teacherName = gradeData.teacherName || 'Enseignant non spécifié';
+            
+            if (gradeData.courseId) {
+                courseName = await getCourseNameById(gradeData.courseId);
+            } else if (gradeData.courseName) {
+                courseName = gradeData.courseName;
+            }
+            
+            // S'assurer que toutes les valeurs sont définies
+            const maxGrade = gradeData.maxGrade || gradeData.maxPoints || 0;
+            const obtainedGrade = gradeData.obtainedGrade || gradeData.grade || 0;
+            const published = gradeData.published || false;
+            
+            const gradeObj = {
+                courseName: courseName,
+                teacherName: teacherName,
+                maxGrade: parseFloat(maxGrade),
+                obtainedGrade: parseFloat(obtainedGrade),
+                published: published,
+                updatedAt: gradeData.updatedAt ? 
+                    new Date(gradeData.updatedAt.toDate()).toLocaleDateString('fr-FR') : 
+                    'Non spécifiée',
+                createdAt: gradeData.createdAt ? 
+                    new Date(gradeData.createdAt.toDate()).toLocaleDateString('fr-FR') : 
+                    'Non spécifiée'
+            };
+            
+            console.log('📋 Grade objet:', gradeObj);
+            allGrades.push(gradeObj);
+            
+        } catch (courseError) {
+            console.error('Erreur traitement cours:', courseError);
+        }
+    }
+    
+    if (allGrades.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Données incomplètes</h3>
+                <p>Les cotes existent mais les données sont incomplètes.</p>
+                <p><small>Contactez l'enseignant pour plus d'informations.</small></p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Trier en vérifiant que courseName existe
+    allGrades.sort((a, b) => {
+        const nameA = a.courseName || '';
+        const nameB = b.courseName || '';
+        return nameA.localeCompare(nameB);
+    });
+    
+    displayPrimaryGradesTable(container, allGrades, period, false);
+}
+
+// Fonction pour traiter les cotes publiées
+async function processPublishedGrades(publishedSnap, container, period) {
+    const allGrades = [];
+    
+    publishedSnap.forEach(doc => {
+        const gradeData = doc.data();
+        console.log('📊 Données cote publiée:', gradeData);
+        
+        if (gradeData.grades && Array.isArray(gradeData.grades)) {
+            gradeData.grades.forEach(courseGrade => {
+                // Vérifier que toutes les propriétés existent
+                const gradeObj = {
+                    courseName: courseGrade.courseName || 'Cours inconnu',
+                    teacherName: gradeData.teacherName || 'Enseignant non spécifié',
+                    maxGrade: courseGrade.maxGrade || courseGrade.maxPoints || 0,
+                    obtainedGrade: courseGrade.obtainedGrade || courseGrade.grade || 0,
+                    published: true,
+                    publishedDate: gradeData.publishedAt ? 
+                        new Date(gradeData.publishedAt.toDate()).toLocaleDateString('fr-FR') : 'Non spécifiée'
+                };
+                
+                console.log('📋 Grade publié:', gradeObj);
+                allGrades.push(gradeObj);
+            });
+        }
+    });
+    
+    if (allGrades.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Données vides</h3>
+                <p>Les cotes publiées ne contiennent pas de données valides.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Trier en vérifiant que courseName existe
+    allGrades.sort((a, b) => {
+        const nameA = a.courseName || '';
+        const nameB = b.courseName || '';
+        return nameA.localeCompare(nameB);
+    });
+    
+    displayPrimaryGradesTable(container, allGrades, period, true);
+}
+
+// Fonction pour obtenir le nom du cours par ID (version robuste)
+async function getCourseNameById(courseId) {
+    if (!courseId) return 'Cours inconnu';
+    
+    try {
+        console.log(`🔍 Recherche cours: ${courseId}`);
+        const courseDoc = await getDoc(doc(db, 'primary_courses', courseId));
+        
+        if (courseDoc.exists()) {
+            const courseData = courseDoc.data();
+            console.log(`✅ Cours trouvé: ${courseData.name}`);
+            return courseData.name || `Cours ${courseId.substring(0, 8)}`;
+        } else {
+            console.log(`❌ Cours non trouvé: ${courseId}`);
+            // Essayer une recherche par query
+            const courseQuery = query(
+                collection(db, 'primary_courses'),
+                where('teacherId', '==', currentTeacher?.id || '')
+            );
+            const coursesSnap = await getDocs(courseQuery);
+            
+            for (const doc of coursesSnap.docs) {
+                if (doc.id === courseId) {
+                    const data = doc.data();
+                    return data.name || `Cours ${courseId.substring(0, 8)}`;
+                }
+            }
+            
+            return `Cours ${courseId.substring(0, 8)}`;
+        }
+    } catch (error) {
+        console.error('❌ Erreur récupération nom cours:', error);
+        return `Cours ${courseId.substring(0, 8)}`;
+    }
+}
+
+// Fonction pour afficher le tableau (version corrigée)
+function displayPrimaryGradesTable(container, grades, period, isPublished) {
+    if (!grades || grades.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Aucune donnée</h3>
+                <p>Aucune cote à afficher pour cette période.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Filtrer les grades qui ont un nom de cours valide
+    const validGrades = grades.filter(grade => grade.courseName && grade.courseName.trim() !== '');
+    
+    if (validGrades.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Données invalides</h3>
+                <p>Les cotes ne contiennent pas de noms de cours valides.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = `
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h4>Cotes primaires - Période: ${period}</h4>
+                <span class="badge ${isPublished ? 'badge-success' : 'badge-warning'}">
+                    ${isPublished ? 'Publié' : 'Enregistré'}
+                </span>
+            </div>
+            
+            ${validGrades[0].teacherName ? 
+                `<p style="color: #666; margin-bottom: 1rem;">Enseignant: ${validGrades[0].teacherName}</p>` : 
+                ''
+            }
+            
+            <div class="table-container">
+                <table class="primary-grades-table">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Cours</th>
+                            <th>Enseignant</th>
+                            <th class="course-header">CM</th>
+                            <th class="course-header">CO</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
+    
+    let index = 1;
+    let totalCM = 0;
+    let totalCO = 0;
+    
+    validGrades.forEach(grade => {
+        // S'assurer que les valeurs sont des nombres
+        const maxGrade = parseFloat(grade.maxGrade) || 0;
+        const obtainedGrade = parseFloat(grade.obtainedGrade) || 0;
+        
+        // Déterminer la classe de couleur pour CO
+        let coClass = 'co-cell';
+        const percentage = maxGrade > 0 ? (obtainedGrade / maxGrade) * 100 : 0;
+        
+        if (percentage >= 75) {
+            coClass = 'co-cell grade-excellent';
+        } else if (percentage >= 50) {
+            coClass = 'co-cell grade-good';
+        } else {
+            coClass = 'co-cell grade-poor';
+        }
+        
+        // Date à afficher
+        const displayDate = isPublished ? 
+            (grade.publishedDate || 'Non spécifiée') : 
+            (grade.updatedAt || grade.createdAt || 'Non spécifiée');
+        
+        html += `
+            <tr>
+                <td>${index}</td>
+                <td><strong>${grade.courseName}</strong></td>
+                <td>${grade.teacherName || 'Non spécifié'}</td>
+                <td class="cm-cell">${maxGrade.toFixed(2)}</td>
+                <td class="${coClass}">${obtainedGrade.toFixed(2)}</td>
+                <td>${displayDate}</td>
+                <td>
+                    ${grade.published ? 
+                        '<span class="badge badge-success">Publié</span>' : 
+                        '<span class="badge badge-warning">Enregistré</span>'
+                    }
+                </td>
+            </tr>
+        `;
+        
+        totalCM += maxGrade;
+        totalCO += obtainedGrade;
+        index++;
+    });
+    
+    html += `
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                <h5>Résumé pour la période ${period} :</h5>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9rem; color: #666;">Total CM</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #e67e22;">${totalCM.toFixed(2)}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9rem; color: #666;">Total CO</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #27ae60;">${totalCO.toFixed(2)}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9rem; color: #666;">Nombre de cours</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #3498db;">${validGrades.length}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem; padding: 1rem; background: #eaf5fc; border-radius: 5px; border-left: 4px solid var(--info);">
+                <h5><i class="fas fa-info-circle"></i> Information :</h5>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                    <strong>CM</strong> = Cote Maximale (note maximale possible)<br>
+                    <strong>CO</strong> = Cote Obtenue (note obtenue par l'élève)<br>
+                    <strong>Enregistré</strong> = Cote saisie par l'enseignant mais non encore officiellement publiée<br>
+                    <strong>Publié</strong> = Cote officiellement publiée et visible par tous les parents
+                </p>
+            </div>
+        </div>
+    `;
+    
+    container.innerHTML = html;
+}
+
 
 // --- Sous-onglet: Cotes Maternelle ---
 document.getElementById('kindergarten-grades-child-selector').addEventListener('change', (e) => {
@@ -6590,6 +6992,8 @@ async function loadChildDashboard(studentId) {
         homeworkContainer.innerHTML = "<p>Les devoirs de la maternelle ne sont pas encore disponibles.</p>";
     }
 }
+
+
 
 // Charger les notes secondaires pour le tableau de bord
 async function loadSecondaryGradesForDashboard(studentId) {
@@ -9268,24 +9672,223 @@ if ('serviceWorker' in navigator) {
 }
 </script>
     <script>
-        // Bouton d'assistant dans le header
-const assistantBtn = document.createElement('button');
-assistantBtn.innerHTML = '🤖 Assistant IA';
-assistantBtn.onclick = () => openAIAssistant();
+      // Variables pour les cotes primaires
+let currentPrimaryPeriod = '1ère P';
+let primaryGradesData = {};
 
-function openAIAssistant() {
-  const question = prompt('Posez votre question sur la scolarité...');
-  const assistant = new AIEducationalAssistant();
-  const response = assistant.answerQuestion(question, {
-    studentId: currentChild.matricule,
-    context: 'parent'
-  });
-  
-  showAIDialog(response);
+// Initialiser les boutons de période pour les cotes primaires
+function setupPrimaryPeriods() {
+    const periodButtons = document.querySelectorAll('#primary-grades-content .period-btn');
+    periodButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Retirer la classe active de tous les boutons
+            periodButtons.forEach(b => b.classList.remove('active'));
+            // Ajouter la classe active au bouton cliqué
+            this.classList.add('active');
+            // Mettre à jour la période courante
+            currentPrimaryPeriod = this.dataset.period;
+            
+            const studentId = document.getElementById('primary-grades-child-selector').value;
+            if (studentId) {
+                loadPrimaryGrades(studentId, currentPrimaryPeriod);
+            }
+        });
+    });
 }
-    </script>
+
+// Modifiez le gestionnaire d'événement pour le sélecteur d'enfant
+document.getElementById('primary-grades-child-selector').addEventListener('change', (e) => {
+    const studentId = e.target.value;
+    const gradesContent = document.getElementById('primary-grades-content');
+    if (!studentId) {
+        gradesContent.classList.add('hidden');
+        return;
+    }
+    gradesContent.classList.remove('hidden');
+    setupPrimaryPeriods(); // Initialiser les boutons de période
+    loadPrimaryGrades(studentId, currentPrimaryPeriod);
+});
+
+// Nouvelle fonction pour charger les cotes primaires avec le nouveau modèle
+async function loadPrimaryGrades(studentId, period) {
+    showLoading('primary-grades-loading');
+    const container = document.getElementById('primary-grades-container');
+    container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Chargement des cotes...</p></div>';
+    
+    try {
+        const child = childrenList.find(c => c.matricule === studentId);
+        if (!child || child.type !== 'primary') {
+            container.innerHTML = '<div class="no-data"><i class="fas fa-exclamation-circle"></i><p>Enfant non trouvé ou non du primaire</p></div>';
+            hideLoading('primary-grades-loading');
+            return;
+        }
+        
+        // Récupérer les cotes publiées pour cet enfant et cette période
+        const gradesQuery = query(
+            collection(db, 'primary_published_grades'),
+            where('studentId', '==', studentId),
+            where('period', '==', period)
+        );
+        
+        const gradesSnap = await getDocs(gradesQuery);
+        
+        if (gradesSnap.empty) {
+            container.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Aucune cote publiée</h3>
+                    <p>Aucune cote n'a été publiée pour la période ${period}</p>
+                </div>
+            `;
+            hideLoading('primary-grades-loading');
+            return;
+        }
+        
+        // Récupérer toutes les cotes pour cette période
+        let allGrades = [];
+        let publishedDate = '';
+        
+        gradesSnap.forEach(doc => {
+            const gradeData = doc.data();
+            publishedDate = gradeData.publishedAt ? 
+                new Date(gradeData.publishedAt.toDate()).toLocaleDateString('fr-FR') : '';
+            
+            if (gradeData.grades && Array.isArray(gradeData.grades)) {
+                gradeData.grades.forEach(courseGrade => {
+                    allGrades.push({
+                        courseName: courseGrade.courseName,
+                        maxGrade: courseGrade.maxGrade || 0,
+                        obtainedGrade: courseGrade.obtainedGrade || 0,
+                        teacherName: courseGrade.teacherName || 'Non spécifié',
+                        publishedDate: publishedDate
+                    });
+                });
+            }
+        });
+        
+        if (allGrades.length === 0) {
+            container.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Aucune cote disponible</h3>
+                    <p>Aucune cote trouvée pour la période ${period}</p>
+                </div>
+            `;
+            hideLoading('primary-grades-loading');
+            return;
+        }
+        
+        // Grouper les cours par nom pour éviter les doublons
+        const uniqueCourses = {};
+        allGrades.forEach(grade => {
+            if (!uniqueCourses[grade.courseName]) {
+                uniqueCourses[grade.courseName] = grade;
+            }
+        });
+        
+        // Créer le tableau HTML selon le modèle de teacher-primaire
+        let html = `
+            <div class="card">
+                <h4>Cotes primaires - Période: ${period}</h4>
+                ${publishedDate ? `<p style="color: #666; margin-bottom: 1rem;">Publié le: ${publishedDate}</p>` : ''}
+                
+                <div class="table-container">
+                    <table class="primary-grades-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">N°</th>
+                                <th rowspan="2">Cours</th>
+                                <th rowspan="2">Enseignant</th>
+                                <th colspan="2">Cotes</th>
+                                <th rowspan="2">Date de publication</th>
+                            </tr>
+                            <tr>
+                                <th class="course-header">CM</th>
+                                <th class="course-header">CO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        `;
+        
+        let index = 1;
+        const courseNames = Object.keys(uniqueCourses);
+        
+        courseNames.forEach(courseName => {
+            const grade = uniqueCourses[courseName];
+            
+            html += `
+                <tr>
+                    <td>${index}</td>
+                    <td><strong>${courseName}</strong></td>
+                    <td>${grade.teacherName}</td>
+                    <td class="cm-cell">${grade.maxGrade}</td>
+                    <td class="co-cell">${grade.obtainedGrade}</td>
+                    <td>${grade.publishedDate}</td>
+                </tr>
+            `;
+            index++;
+        });
+        
+        html += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                    <h5>Légende :</h5>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 20px; height: 20px; background-color: #fff8e1; border: 1px solid #ffd54f;"></div>
+                            <span>CM = Cote Maximale</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 20px; height: 20px; background-color: #e8f5e9; border: 1px solid #c8e6c9;"></div>
+                            <span>CO = Cote Obtenue</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        hideLoading('primary-grades-loading');
+        
+        // Marquer les notifications comme lues
+        markNotificationsAsRead('grades');
+        
+    } catch (error) {
+        console.error('Erreur chargement cotes primaires:', error);
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Erreur de chargement</h3>
+                <p>${error.message}</p>
+            </div>
+        `;
+        hideLoading('primary-grades-loading');
+    }
+}
+
+// Fonction utilitaire pour afficher/masquer le chargement
+function showLoading(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.classList.remove('hidden');
+    }
+}
+
+function hideLoading(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.classList.add('hidden');
+    }
+}
+     </script>
+            </div>
+        </div>
+    </div>
 </body>
-</html>    
+</html>  
     
     
 
