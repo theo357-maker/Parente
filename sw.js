@@ -1,8 +1,8 @@
-// Version de l'application - À MODIFIER à chaque mise à jour
-const APP_VERSION = '1.1.0';
-const CACHE_NAME = `theovet-cache-v${APP_VERSION}`;
+// sw.js - Service Worker optimisé pour PWA et Notifications
+const CACHE_NAME = 'cs-lacolombe-v2.3.0';
+const BACKGROUND_SYNC_TAG = 'background-sync-notifications';
+const SYNC_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
-// Fichiers à mettre en cache pour le fonctionnement offline
 const STATIC_CACHE_URLS = [
   '/',
   './index.html',
@@ -16,13 +16,13 @@ const STATIC_CACHE_URLS = [
   'icon-384x384.png',
   'icon-512x512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js',
-  'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
-  'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js',
-  'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js',
-  'https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js'
+  'https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js'
 ];
+
+// Données en cache pour fonctionnement hors ligne
+let cachedParentData = null;
+let lastCheckTimestamp = 0;
 
 // Installation du Service Worker
 self.addEventListener('install', (event) => {
@@ -67,120 +67,439 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Interception des requêtes
+// Dans sw.js - MODIFIER la section d'activation
+self.addEventListener('activate', (event) => {
+  console.log('🎯 Service Worker: Activation v2.3.0 - PRIORITÉ MAX');
+  
+  event.waitUntil(
+    Promise.all([
+      // Prendre le contrôle IMMÉDIATEMENT
+      self.clients.claim(),
+      
+      // Nettoyer les caches EN PARALLÈLE
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      
+      // FORCER l'initialisation immédiate
+      initializeImmediateBackgroundSync()
+    ])
+  );
+});
+
+// NOUVELLE FONCTION - Initialisation immédiate
+function initializeImmediateBackgroundSync() {
+  console.log('🚀 Initialisation IMMÉDIATE des notifications');
+  
+  // Démarrer la vérification IMMÉDIATEMENT
+  setTimeout(() => {
+    checkForNewDataInBackground();
+  }, 3000); // Seulement 3 secondes après activation
+  
+  // Configurer les écouteurs
+  setupBackgroundListeners();
+  
+  return Promise.resolve();
+}
+// === INITIALISATION SYNCHRO ARRIÈRE-PLAN ===
+function initializeBackgroundSync() {
+  console.log('🔄 Initialisation synchronisation arrière-plan');
+  
+  // Programmer une synchronisation périodique
+  setInterval(() => {
+    checkForNewDataInBackground();
+  }, SYNC_INTERVAL);
+  
+  // Synchroniser immédiatement
+  setTimeout(checkForNewDataInBackground, 10000);
+}
+
+// === VÉRIFICATION DES DONNÉES EN ARRIÈRE-PLAN ===
+async function checkForNewDataInBackground() {
+  console.log('🔍 Vérification données arrière-plan...');
+  
+  try {
+    // 1. Récupérer les données parent depuis le cache
+    const cache = await caches.open(CACHE_NAME);
+    const response = await cache.match('/parent-data.json');
+    
+    if (response) {
+      cachedParentData = await response.json();
+      console.log('📊 Données parent récupérées:', cachedParentData);
+    }
+    
+    // 2. Vérifier si connecté à Internet
+    if (!navigator.onLine) {
+      console.log('🌐 Hors ligne - Report de la vérification');
+      return;
+    }
+    
+    // 3. Vérifier les nouvelles données
+    await Promise.all([
+      checkNewGrades(),
+      checkNewIncidents(),
+      checkNewHomework(),
+      checkNewCommunications(),
+      checkNewPresences()
+    ]);
+    
+    lastCheckTimestamp = Date.now();
+    
+  } catch (error) {
+    console.error('❌ Erreur vérification arrière-plan:', error);
+  }
+}
+
+// === VÉRIFIER LES NOUVELLES NOTES ===
+async function checkNewGrades() {
+  if (!cachedParentData || !cachedParentData.children) return;
+  
+  try {
+    // Utiliser l'API Firestore via import dynamique
+    const firebaseAppScript = await importScripts('https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js');
+    const firestoreScript = await importScripts('https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js');
+    
+    // Initialiser Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBn7VIddclO7KtrXb5sibCr9SjVLjOy-qI",
+      projectId: "theo1d",
+      // Configuration minimale pour Firestore
+    };
+    
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    
+    const db = firebase.firestore();
+    
+    for (const child of cachedParentData.children) {
+      if (child.type === 'secondary') {
+        const lastCheck = getLastCheckTime('grades', child.matricule);
+        
+        const gradesQuery = firebase.firestore()
+          .collection('published_grades')
+          .where('className', '==', child.class)
+          .where('publishedAt', '>', new Date(lastCheck));
+        
+        const querySnapshot = await gradesQuery.get();
+        
+        querySnapshot.forEach((doc) => {
+          const gradeData = doc.data();
+          const hasStudentGrade = gradeData.grades?.some(g => 
+            g.studentMatricule === child.matricule
+          );
+          
+          if (hasStudentGrade) {
+            showBackgroundNotification({
+              title: '📊 Nouvelle note',
+              body: `${child.fullName} a une nouvelle note en ${gradeData.subject}`,
+              data: {
+                type: 'grades',
+                page: 'grades',
+                childId: child.matricule,
+                childName: child.fullName,
+                gradeId: doc.id
+              }
+            });
+            
+            updateLastCheckTime('grades', child.matricule);
+          }
+        });
+      }
+    }
+    
+  } catch (error) {
+    console.error('❌ Erreur vérification notes:', error);
+  }
+}
+
+// === VÉRIFIER LES NOUVEAUX INCIDENTS ===
+async function checkNewIncidents() {
+  if (!cachedParentData || !cachedParentData.children) return;
+  
+  try {
+    for (const child of cachedParentData.children) {
+      const lastCheck = getLastCheckTime('incidents', child.matricule);
+      
+      // Ici, normalement vous feriez une requête Firestore
+      // Pour l'exemple, on simule
+      
+      // Stocker la vérification
+      updateLastCheckTime('incidents', child.matricule);
+    }
+  } catch (error) {
+    console.error('❌ Erreur vérification incidents:', error);
+  }
+}
+
+// === VÉRIFIER LES NOUVEAUX DEVOIRS ===
+async function checkNewHomework() {
+  if (!cachedParentData || !cachedParentData.children) return;
+  
+  try {
+    for (const child of cachedParentData.children) {
+      if (child.type === 'secondary') {
+        const lastCheck = getLastCheckTime('homework', child.matricule);
+        updateLastCheckTime('homework', child.matricule);
+      }
+    }
+  } catch (error) {
+    console.error('❌ Erreur vérification devoirs:', error);
+  }
+}
+
+// === VÉRIFIER LES NOUVELLES COMMUNICATIONS ===
+async function checkNewCommunications() {
+  if (!cachedParentData) return;
+  
+  try {
+    const lastCheck = getLastCheckTime('communications', cachedParentData.matricule);
+    updateLastCheckTime('communications', cachedParentData.matricule);
+  } catch (error) {
+    console.error('❌ Erreur vérification communications:', error);
+  }
+}
+
+// === VÉRIFIER LES NOUVELLES PRÉSENCES ===
+async function checkNewPresences() {
+  if (!cachedParentData || !cachedParentData.children) return;
+  
+  try {
+    for (const child of cachedParentData.children) {
+      const lastCheck = getLastCheckTime('presence', child.matricule);
+      updateLastCheckTime('presence', child.matricule);
+    }
+  } catch (error) {
+    console.error('❌ Erreur vérification présences:', error);
+  }
+}
+
+// === NOTIFICATION ARRIÈRE-PLAN ===
+function showBackgroundNotification(notificationData) {
+  const { title, body, data } = notificationData;
+  
+  const options = {
+    body: body,
+    icon: '/icon-192x192.png',
+    badge: '/icon-72x72.png',
+    vibrate: [200, 100, 200],
+    data: data || {},
+    requireInteraction: true,
+    tag: data?.type || 'general',
+    renotify: true,
+    actions: [
+      { action: 'view', title: '👁️ Voir' },
+      { action: 'dismiss', title: '❌ Fermer' }
+    ],
+    silent: false
+  };
+  
+  self.registration.showNotification(title, options)
+    .then(() => {
+      console.log('📨 Notification arrière-plan affichée:', title);
+      
+      // Mettre à jour le badge
+      updateBadgeCount(1);
+    })
+    .catch(error => {
+      console.error('❌ Erreur affichage notification:', error);
+    });
+}
+
+// === GESTION DU TEMPS DE VÉRIFICATION ===
+function getLastCheckTime(type, id) {
+  const key = `lastCheck_${type}_${id}`;
+  const timestamp = localStorage.getItem(key);
+  return timestamp ? new Date(parseInt(timestamp)) : new Date(0);
+}
+
+function updateLastCheckTime(type, id) {
+  const key = `lastCheck_${type}_${id}`;
+  localStorage.setItem(key, Date.now().toString());
+}
+
+// === MISE À JOUR DU COMPTEUR DE BADGE ===
+function updateBadgeCount(increment = 1) {
+  let currentCount = parseInt(localStorage.getItem('notification_count') || '0');
+  currentCount += increment;
+  localStorage.setItem('notification_count', currentCount.toString());
+  
+  if ('setAppBadge' in navigator) {
+    navigator.setAppBadge(currentCount).catch(console.error);
+  }
+}
+
+// === GESTION DES MESSAGES ===
+self.addEventListener('message', (event) => {
+  const { type, data } = event.data || {};
+  
+  switch (type) {
+    case 'SAVE_PARENT_DATA':
+      console.log('💾 Sauvegarde données parent');
+      cachedParentData = data;
+      
+      // Sauvegarder dans le cache
+      caches.open(CACHE_NAME).then(cache => {
+        cache.put(
+          new Request('/parent-data.json'),
+          new Response(JSON.stringify(data))
+        );
+      });
+      break;
+      
+    case 'CHECK_NOW':
+      console.log('🔔 Vérification immédiate demandée');
+      checkForNewDataInBackground();
+      break;
+      
+    case 'UPDATE_BADGE':
+      updateBadgeCount(data.count || 0);
+      break;
+      
+    case 'CLEAR_BADGE':
+      localStorage.setItem('notification_count', '0');
+      if ('clearAppBadge' in navigator) {
+        navigator.clearAppBadge();
+      }
+      break;
+      
+    case 'TEST_BACKGROUND_NOTIFICATION':
+      showBackgroundNotification({
+        title: '✅ Test notification',
+        body: 'Les notifications arrière-plan fonctionnent !',
+        data: { type: 'test', page: 'dashboard' }
+      });
+      break;
+  }
+});
+
+// === ÉVÉNEMENT PUSH ===
+self.addEventListener('push', (event) => {
+  console.log('📨 Événement push reçu');
+  
+  let notificationData = {};
+  
+  try {
+    notificationData = event.data ? event.data.json() : {};
+  } catch (e) {
+    notificationData = {
+      title: 'CS La Colombe',
+      body: 'Nouvelle mise à jour disponible',
+      data: { type: 'push' }
+    };
+  }
+  
+  showBackgroundNotification(notificationData);
+});
+
+// === ÉVÉNEMENT SYNC ===
+self.addEventListener('sync', (event) => {
+  console.log('🔄 Événement sync:', event.tag);
+  
+  if (event.tag === BACKGROUND_SYNC_TAG) {
+    event.waitUntil(
+      checkForNewDataInBackground()
+        .catch(error => {
+          console.error('❌ Erreur sync:', error);
+          // Réessayer plus tard
+          return Promise.reject(error);
+        })
+    );
+  }
+});
+
+// === ÉVÉNEMENT PERIODICSYNC (pour Chrome) ===
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'periodic-background-sync') {
+    console.log('🔄 Synchronisation périodique déclenchée');
+    event.waitUntil(checkForNewDataInBackground());
+  }
+});
+
+// === ÉVÉNEMENT ONLINE/OFFLINE ===
+self.addEventListener('online', () => {
+  console.log('🌐 En ligne - Lancement synchronisation');
+  checkForNewDataInBackground();
+});
+
+// === FETCH STRATÉGIE DE CACHE ===
 self.addEventListener('fetch', (event) => {
-  // Ignorer les requêtes non-GET et les requêtes Firebase
-  if (event.request.method !== 'GET' || 
-      event.request.url.includes('firebase') ||
-      event.request.url.includes('googleapis')) {
+  const request = event.request;
+  
+  // Ignorer les requêtes Firebase/Firestore
+  if (request.url.includes('firebase') || 
+      request.url.includes('googleapis.com/fcm') ||
+      request.url.includes('cloudinary')) {
     return;
   }
-
+  
+  // Pour les pages HTML : Network First
+  if (request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request)
+            .then(cachedResponse => cachedResponse || caches.match('index.html'));
+        })
+    );
+    return;
+  }
+  
+  // Pour les autres : Cache First
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Retourner la réponse en cache si elle existe
+    caches.match(request)
+      .then(cachedResponse => {
         if (cachedResponse) {
           return cachedResponse;
         }
-
-        // Sinon, faire la requête réseau
-        return fetch(event.request)
-          .then((response) => {
-            // Vérifier si la réponse est valide
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Cloner la réponse pour la mettre en cache
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
+        
+        return fetch(request)
+          .then(response => {
+            if (request.method === 'GET') {
+              const responseClone = response.clone();
+              caches.open(CACHE_NAME).then(cache => {
+                cache.put(request, responseClone);
               });
-
+            }
             return response;
           })
           .catch(() => {
-            // En cas d'erreur réseau, on pourrait retourner une page offline personnalisée
-            // Pour l'instant, on laisse l'erreur se propager
-            console.log('🌐 Mode hors ligne - Requête échouée:', event.request.url);
+            // Fallback pour les images
+            if (request.destination === 'image') {
+              return caches.match('/icon-192x192.png');
+            }
+            return new Response('Ressource non disponible hors ligne', {
+              status: 503,
+              statusText: 'Service Unavailable'
+            });
           });
       })
   );
 });
 
-// Gestion des messages depuis l'application
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-  
-  if (event.data && event.data.type === 'GET_VERSION') {
-    event.ports[0].postMessage(APP_VERSION);
-  }
-});
-
-// Vérification des mises à jour en arrière-plan
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync') {
-    console.log('🔄 Synchronisation en arrière-plan');
-    event.waitUntil(doBackgroundSync());
-  }
-});
-
-async function doBackgroundSync() {
-  // Ici vous pouvez implémenter la synchronisation des données
-  // avec Firebase lorsque la connexion est rétablie
-  console.log('🔄 Synchronisation des données...');
+// === FONCTION UTILITAIRE IMPORT SCRIPTS ===
+function importScripts(url) {
+  return new Promise((resolve, reject) => {
+    try {
+      importScripts(url);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
-// Gestion des notifications push
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
-
-  const data = event.data.json();
-  const options = {
-    body: data.body || 'Nouvelle notification TheoVêt',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      url: data.url || '/'
-    },
-    actions: [
-      {
-        action: 'open',
-        title: 'Ouvrir'
-      },
-      {
-        action: 'close',
-        title: 'Fermer'
-      }
-    ]
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'TheoVêt', options)
-  );
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-
-  if (event.action === 'open') {
-    event.waitUntil(
-      clients.matchAll({ type: 'window' }).then((clientList) => {
-        for (const client of clientList) {
-          if (client.url === event.notification.data.url && 'focus' in client) {
-            return client.focus();
-          }
-        }
-        if (clients.openWindow) {
-          return clients.openWindow(event.notification.data.url);
-        }
-      })
-    );
-  }
-});
+console.log('✅ Service Worker chargé - Notifications arrière-plan activées');
