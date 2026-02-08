@@ -1,80 +1,79 @@
 {
-  "name": "Espace Parent - CS La Colombe",
-  "short_name": "CS Parent",
-  "description": "Notifications temps réel - Même app fermée",
-  "start_url": "index.html?source=pwa",
-  "scope": "./",
+  "name": "TheoVêt - Gestion Commerce",
+  "short_name": "TheoVêt",
+  "description": "Solution complète de gestion de commerce de vêtements",
+  "start_url": "index.html",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#3498db",
   "theme_color": "#3498db",
   "orientation": "portrait-primary",
-  "lang": "fr-FR",
-  "dir": "ltr",
-  
-  // === VERSION ===
-  "version": "3.0.0",
-  "id": "/",
-  
-  // === SERVICE WORKER POUR BACKGROUND ===
-  "background": {
-    "service_worker": "firebase-messaging-sw.js",
-    "type": "module"
-  },
-  
-  // === PERMISSIONS ABSOLUMENT NÉCESSAIRES ===
-  "permissions": [
-    "notifications",
-    "background",
-    "background-sync"
-  ],
-  
-  // === FIREBASE PUSH (ESSENTIEL) ===
-  "gcm_sender_id": "103953800507",
-  "gcm_user_visible_only": true,
-  
-  // === ICÔNES MINIMALES MAIS REQUISES ===
+  "scope": "/",
+  "lang": "fr",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
-      "src": "./icon-72x72.png",
+      "src": "icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "./icon-192x192.png",
+      "src": "icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable badge"
+      "purpose": "maskable any"
     },
     {
-      "src": "./icon-512x512.png",
+      "src": "icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     }
   ],
-  
-  // === SPLASH SCREEN ===
-  "splash_pages": null,
-  
-  // === SHORTCUTS SIMPLES ===
-  "shortcuts": [
+  "screenshots": [
     {
-      "name": "Tableau de bord",
-      "short_name": "Dashboard",
-      "description": "Tableau de bord",
-      "url": "./index.html?page=dashboard"
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tableau de bord TheoVêt"
     },
     {
-      "name": "Notifications",
-      "short_name": "🔔 Alertes",
-      "description": "Notifications",
-      "url": "./index.html?page=notifications"
+      "src": "creenshot2.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Gestion des ventes"
     }
-  ],
-  
-  // === CONFIGURATION ANDROID/IOS ===
-  "prefer_related_applications": false,
-  "related_applications": []
+  ]
 }
