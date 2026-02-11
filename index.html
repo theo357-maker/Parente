@@ -1,3 +1,4 @@
+
  <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -2299,32 +2300,8 @@ async function setupFirebaseMessaging() {
     return;
   }
 
-  // Vérifier et enregistrer le Service Worker UNIFIÉ
-  if (!navigator.serviceWorker.controller) {
-    try {
-      // Enregistrer le SW unifié
-      const registration = await navigator.serviceWorker.register('sw.js', {
-        scope: './',
-        updateViaCache: 'none' // Toujours vérifier les mises à jour
-      });
-      
-      console.log('✅ Service Worker unifié enregistré:', registration.scope);
-      
-      // Attendre l'activation
-      if (registration.active) {
-        await registration.active;
-      } else if (registration.installing) {
-        await new Promise(resolve => {
-          registration.installing.addEventListener('statechange', () => {
-            if (registration.active) resolve();
-          });
-        });
-      }
-    } catch (swError) {
-      console.error('❌ Erreur enregistrement SW:', swError);
-      return;
-    }
-  }
+  
+
 
   // Initialiser Firebase dans la page principale aussi
   try {
@@ -9001,143 +8978,6 @@ document.querySelectorAll('.modal').forEach(modal => {
 
 window.closeModal = (modalId) => document.getElementById(modalId).classList.add('hidden');
 
-// === INSTALLATION ET MISE À JOUR DE L'APPLICATION ===
-
-// Vérifier si le service worker est supporté
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      // Enregistrer le service worker
-      const registration = await navigator.serviceWorker.register('sw.js');
-      console.log('✅ Service Worker enregistré avec succès:', registration);
-
-      // Vérifier l'installation de l'application
-      checkAppInstallation();
-      
-      // Écouter les messages du service worker
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data.type === 'NEW_VERSION_DETECTED') {
-          showUpdateNotification(event.data.version, event.data.previousVersion);
-        }
-        
-        if (event.data.type === 'UPDATE_AVAILABLE') {
-          showMandatoryUpdateNotification(
-            event.data.newVersion, 
-            event.data.currentVersion,
-            event.data.updateUrl
-          );
-        }
-      });
-      
-      // Vérifier les mises à jour périodiquement
-      setInterval(() => {
-        checkForUpdates();
-      }, 3600000); // Toutes les heures
-      
-    } catch (error) {
-      console.error('❌ Erreur lors de l\'enregistrement du Service Worker:', error);
-    }
-  });
-}
-
-// Vérifier si l'application est installée
-function checkAppInstallation() {
-  // Vérifier si l'application peut être installée
-  window.addEventListener('beforeinstallprompt', (event) => {
-    // Empêcher l'affichage automatique du prompt
-    event.preventDefault();
-    
-    // Stocker l'événement pour plus tard
-    window.deferredPrompt = event;
-    
-    // Afficher une notification pour l'installation
-    showInstallNotification();
-  });
-
-  // Vérifier si l'application est déjà installée
-  if (window.matchMedia('(display-mode: standalone)').matches || 
-      window.navigator.standalone === true) {
-    console.log('✅ Application déjà installée');
-  } else {
-    console.log('📱 Application non installée');
-  }
-}
-
-// Afficher une notification pour l'installation
-function showInstallNotification() {
-  // Vérifier si on n'a pas déjà montré la notification aujourd'hui
-  const lastInstallPrompt = localStorage.getItem('last_install_prompt');
-  const today = new Date().toDateString();
-  
-  if (lastInstallPrompt === today) {
-    return; // Ne pas montrer plus d'une fois par jour
-  }
-  
-  // Sauvegarder la date du prompt
-  localStorage.setItem('last_install_prompt', today);
-  
-  // Afficher une notification toast
-  const installToast = document.createElement('div');
-  installToast.className = 'notification-toast info';
-  installToast.innerHTML = `
-    <div class="notification-header">
-      <div class="notification-title">
-        <i class="fas fa-download"></i> Installer l'application
-      </div>
-      <button class="notification-close">&times;</button>
-    </div>
-    <div class="notification-body">
-      <p>Installez l'application pour un accès plus rapide et une utilisation hors ligne.</p>
-      <div class="notification-actions" style="margin-top: 10px;">
-        <button class="btn btn-success btn-sm" id="install-app-btn">
-          <i class="fas fa-download"></i> Installer
-        </button>
-        <button class="btn btn-secondary btn-sm" id="later-install-btn">
-          Plus tard
-        </button>
-      </div>
-    </div>
-  `;
-  
-  document.body.appendChild(installToast);
-  
-  setTimeout(() => {
-    installToast.classList.add('show');
-  }, 1000);
-  
-  // Gérer le bouton d'installation
-  document.getElementById('install-app-btn').addEventListener('click', async () => {
-    installToast.classList.remove('show');
-    setTimeout(() => installToast.remove(), 300);
-    
-    if (window.deferredPrompt) {
-      window.deferredPrompt.prompt();
-      const { outcome } = await window.deferredPrompt.userChoice;
-      console.log(`Résultat de l'installation: ${outcome}`);
-      window.deferredPrompt = null;
-    }
-  });
-  
-  // Gérer le bouton "Plus tard"
-  document.getElementById('later-install-btn').addEventListener('click', () => {
-    installToast.classList.remove('show');
-    setTimeout(() => installToast.remove(), 300);
-  });
-  
-  // Fermer le toast
-  installToast.querySelector('.notification-close').addEventListener('click', () => {
-    installToast.classList.remove('show');
-    setTimeout(() => installToast.remove(), 300);
-  });
-  
-  // Fermer automatiquement après 15 secondes
-  setTimeout(() => {
-    if (installToast.parentNode) {
-      installToast.classList.remove('show');
-      setTimeout(() => installToast.remove(), 300);
-    }
-  }, 15000);
-}
 
 // Afficher une notification de mise à jour
 function showUpdateNotification(newVersion, previousVersion) {
@@ -10260,12 +10100,228 @@ async function checkForNewData() {
     }
 }
      </script>
-            </div>
-        </div>
-    </div>
-</body>
-</html>  
+           
+ 
     
     
 
       
+
+
+<script>
+// Gestionnaire PWA - Installation et mises à jour
+class PWAHandler {
+  constructor() {
+    this.deferredPrompt = null;
+    this.updateAvailable = false;
+    this.registration = null;
+    this.init();
+  }
+
+  async init() {
+    // Vérifier si le service worker est supporté
+    if ('serviceWorker' in navigator) {
+      try {
+        // Enregistrer le service worker
+        this.registration = await navigator.serviceWorker.register('sw.js');
+        console.log('✅ Service Worker enregistré avec succès');
+
+        // Écouter les mises à jour
+        this.setupUpdateListener();
+        
+        // Vérifier la version actuelle
+        await this.checkVersion();
+      } catch (error) {
+        console.error('❌ Erreur enregistrement Service Worker:', error);
+      }
+    }
+
+    // Gestion de l'installation
+    this.setupInstallPrompt();
+  }
+
+  setupInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+      this.showInstallButton();
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('✅ PWA installée avec succès');
+      this.deferredPrompt = null;
+      this.hideInstallButton();
+      this.showAlert('✅ Application installée avec succès!', 'success');
+    });
+  }
+
+  setupUpdateListener() {
+    if (this.registration) {
+      this.registration.addEventListener('updatefound', () => {
+        const newWorker = this.registration.installing;
+        
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // Nouvelle version disponible
+            this.updateAvailable = true;
+            this.showUpdateNotification();
+          }
+        });
+      });
+    }
+
+    // Vérifier les mises à jour périodiquement
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('🔄 Contrôleur du Service Worker changé - rechargement');
+      window.location.reload();
+    });
+  }
+
+  showInstallButton() {
+    // Créer ou afficher le bouton d'installation
+    let installBtn = document.getElementById('pwa-install-btn');
+    
+    if (!installBtn) {
+      installBtn = document.createElement('button');
+      installBtn.id = 'pwa-install-btn';
+      installBtn.innerHTML = '<i class="fas fa-download"></i> Installer l\'app';
+      installBtn.className = 'btn btn-success';
+      installBtn.style.position = 'fixed';
+      installBtn.style.bottom = '20px';
+      installBtn.style.right = '20px';
+      installBtn.style.zIndex = '10000';
+      installBtn.onclick = () => this.installApp();
+      
+      document.body.appendChild(installBtn);
+    }
+    
+    installBtn.style.display = 'block';
+  }
+
+  hideInstallButton() {
+    const installBtn = document.getElementById('pwa-install-btn');
+    if (installBtn) {
+      installBtn.style.display = 'none';
+    }
+  }
+
+  async installApp() {
+    if (this.deferredPrompt) {
+      this.deferredPrompt.prompt();
+      const { outcome } = await this.deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('✅ Utilisateur a accepté l\'installation');
+      } else {
+        console.log('❌ Utilisateur a refusé l\'installation');
+      }
+      
+      this.deferredPrompt = null;
+      this.hideInstallButton();
+    }
+  }
+
+  showUpdateNotification() {
+    // Créer la notification de mise à jour
+    const updateNotification = document.createElement('div');
+    updateNotification.id = 'pwa-update-notification';
+    updateNotification.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--warning);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg);
+        z-index: 10000;
+        max-width: 300px;
+        animation: slideInRight 0.5s ease;
+      ">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <i class="fas fa-sync-alt" style="font-size: 1.2rem;"></i>
+          <strong>Mise à jour disponible</strong>
+        </div>
+        <p style="margin: 0 0 10px 0; font-size: 0.9rem;">
+          Une nouvelle version de TheoVêt est disponible.
+        </p>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="pwaHandler.updateApp()" class="btn btn-sm btn-success">
+            <i class="fas fa-download"></i> Télécharger
+          </button>
+          <button onclick="pwaHandler.hideUpdateNotification()" class="btn btn-sm btn-light">
+            Plus tard
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(updateNotification);
+  }
+
+  hideUpdateNotification() {
+    const notification = document.getElementById('pwa-update-notification');
+    if (notification) {
+      notification.remove();
+    }
+  }
+
+  async updateApp() {
+    if (this.registration && this.registration.waiting) {
+      // Envoyer un message au service worker pour sauter l'attente
+      this.registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      
+      this.showAlert('🔄 Mise à jour en cours...', 'info');
+      this.hideUpdateNotification();
+      
+      // Recharger la page après un court délai
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+  }
+
+  async checkVersion() {
+    if (this.registration && this.registration.active) {
+      this.registration.active.postMessage({ type: 'GET_VERSION' });
+    }
+  }
+
+  showAlert(message, type = 'info') {
+    // Utiliser votre système d'alerte existant
+    if (typeof showAlert === 'function') {
+      showAlert(message, type);
+    } else {
+      console.log(`${type.toUpperCase()}: ${message}`);
+    }
+  }
+
+  // Vérifier la connexion
+  checkConnection() {
+    if (!navigator.onLine) {
+      this.showAlert('🌐 Mode hors ligne activé', 'warning');
+    }
+
+    window.addEventListener('online', () => {
+      this.showAlert('✅ Connexion rétablie', 'success');
+    });
+
+    window.addEventListener('offline', () => {
+      this.showAlert('⚠️ Mode hors ligne', 'warning');
+    });
+  }
+}
+
+// Initialiser le gestionnaire PWA
+let pwaHandler;
+
+document.addEventListener('DOMContentLoaded', () => {
+  pwaHandler = new PWAHandler();
+  pwaHandler.checkConnection();
+});
+
+</script>
+
+</body>
+</html> 
